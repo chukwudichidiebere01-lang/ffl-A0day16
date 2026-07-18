@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Fast French Lab · Jour 16 · Les Transports</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F8FF;--bg2:#FFFFFF;--bg3:#EBF1FF;--bg4:#DBE7FF;
+  --tr:#2347A0;--tr2:#152F78;--trb:rgba(35,71,160,.13);--trb2:rgba(35,71,160,.06);
+  --yl:#C49000;--yl2:#9E7200;--ylb:rgba(196,144,0,.13);--ylb2:rgba(196,144,0,.06);
+  --gn:#1A7A44;--gn2:#0F5030;--gnb:rgba(26,122,68,.13);--gnb2:rgba(26,122,68,.06);
+  --rd:#B52020;--rdb:rgba(181,32,32,.09);
+  --pu:#6B2AA0;--pub:rgba(107,42,160,.1);
+  --or:#C06010;--orb:rgba(192,96,16,.1);
+  --txt:#0E1828;--txt2:#1A2E50;--mut:#4E6080;
+  --bdr:rgba(35,71,160,.16);--bdr2:rgba(35,71,160,.09);
+  --sh:0 4px 22px rgba(35,71,160,.1);--sh2:0 2px 10px rgba(0,0,0,.04);
+  --r:16px;--rsm:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:16px;overflow-x:hidden}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif}
+.fr{font-family:'EB Garamond',serif}
+
+/* WELCOME */
+#wModal{position:fixed;inset:0;z-index:3000;background:linear-gradient(160deg,#F5F8FF 0%,#D8E6FF 60%,#F5F8FF 100%);display:flex;align-items:center;justify-content:center;padding:14px;overflow-y:auto}
+.wCard{background:var(--bg2);border-radius:22px;padding:28px 22px 24px;max-width:420px;width:100%;box-shadow:0 24px 60px rgba(35,71,160,.18);border:1.5px solid var(--bdr2)}
+.wBadge{display:inline-flex;align-items:center;gap:4px;background:var(--trb);color:var(--tr2);border:1px solid rgba(35,71,160,.28);border-radius:50px;padding:3px 13px;font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;font-family:'Space Grotesk',sans-serif;margin-bottom:9px}
+.wLogo{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:-.3px;text-align:center;color:var(--txt)}.wLogo em{color:var(--tr);font-style:normal}
+.wSub{font-size:.77rem;color:var(--mut);text-align:center;margin-bottom:16px;line-height:1.65}
+.wFg{margin-bottom:11px}.wFg label{display:block;font-size:.69rem;font-weight:700;margin-bottom:4px;color:var(--txt2);text-transform:uppercase;letter-spacing:.7px}
+.wFg input{width:100%;padding:11px 13px;background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:10px;font-size:.9rem;outline:none;color:var(--txt);font-family:'Nunito',sans-serif;transition:border-color .2s}
+.wFg input:focus{border-color:var(--tr)}.wFg input.werr{border-color:var(--rd)}
+.wErr{font-size:.69rem;color:var(--rd);margin-top:3px;display:none;font-weight:700}
+.moodRow{display:flex;gap:6px;justify-content:center;margin:6px 0 3px}
+.moodBtn{font-size:1.4rem;padding:7px;border:2px solid var(--bdr2);border-radius:9px;background:var(--bg3);cursor:pointer;transition:all .18s;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
+.moodBtn.sel{border-color:var(--tr);background:var(--trb);transform:scale(1.1)}
+.wBtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--tr),var(--tr2));color:#fff;border:none;border-radius:50px;font-family:'Space Grotesk',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:9px;transition:opacity .2s;box-shadow:0 5px 22px rgba(35,71,160,.35)}
+.wBtn:hover{opacity:.88}
+
+/* HEADER */
+.hdr{background:rgba(245,248,255,.97);border-bottom:1px solid var(--bdr2);padding:10px 15px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;backdrop-filter:blur(14px)}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:.85rem;color:var(--txt)}.logo em{color:var(--tr);font-style:normal}
+.hdrR{display:flex;align-items:center;gap:9px}
+.dayPill{background:linear-gradient(135deg,var(--tr),var(--tr2));color:#fff;border-radius:50px;padding:4px 14px;font-size:.7rem;font-weight:700;font-family:'Space Grotesk',sans-serif}
+#musicBtn{background:var(--ylb);border:1.5px solid rgba(196,144,0,.3);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:all .2s;color:var(--yl2)}
+#musicBtn.on{background:var(--yl);color:#fff;border-color:var(--yl)}
+
+/* PROGRESS */
+.progWrap{padding:6px 14px 5px;background:rgba(245,248,255,.96);border-bottom:1px solid var(--bdr2)}
+.progSegs{display:flex;gap:3px}.pSeg{flex:1;height:4px;border-radius:99px;background:var(--bdr2);transition:background .4s}
+.pSeg.done{background:var(--tr)}.pSeg.active{background:var(--yl)}
+.progLbl{display:flex;justify-content:space-between;font-size:.5rem;color:var(--mut);margin-top:3px}
+
+/* LAYOUT */
+.wrap{max-width:720px;margin:0 auto;padding:14px 12px 130px}
+.dots{display:flex;gap:5px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.dot{width:32px;height:32px;border-radius:50%;background:var(--bg3);color:var(--mut);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;cursor:pointer;transition:all .22s;border:2px solid var(--bdr2)}
+.dot.active{background:var(--tr);color:#fff;border-color:var(--tr)}.dot.done{background:var(--trb);color:var(--tr2);border-color:var(--tr)}
+.sec{display:none}.sec.show{display:block;animation:sUp .32s ease}
+@keyframes sUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:var(--bg2);border-radius:var(--r);padding:18px;margin-bottom:14px;border:1px solid var(--bdr2);box-shadow:var(--sh)}
+.cardHdr{display:flex;align-items:center;gap:11px;padding-bottom:13px;border-bottom:1px solid var(--bdr2);margin-bottom:15px}
+.cardIco{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.iT{background:var(--trb);border:1px solid var(--bdr2)}.iY{background:var(--ylb);border:1px solid rgba(196,144,0,.22)}.iG{background:var(--gnb);border:1px solid rgba(26,122,68,.2)}.iP{background:var(--pub);border:1px solid rgba(107,42,160,.18)}.iO{background:var(--orb);border:1px solid rgba(192,96,16,.2)}
+.cardTitle{font-size:.97rem;font-weight:700;color:var(--txt);font-family:'Space Grotesk',sans-serif}.cardSub{font-size:.69rem;color:var(--mut);margin-top:2px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:50px;padding:3px 12px;font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:11px;font-family:'Space Grotesk',sans-serif}
+.bTr{background:var(--trb);color:var(--tr2);border:1px solid rgba(35,71,160,.25)}
+.bYl{background:var(--ylb);color:var(--yl2);border:1px solid rgba(196,144,0,.28)}
+.bGn{background:var(--gnb);color:var(--gn2);border:1px solid rgba(26,122,68,.25)}
+.bPu{background:var(--pub);color:var(--pu);border:1px solid rgba(107,42,160,.22)}
+.bOr{background:var(--orb);color:var(--or);border:1px solid rgba(192,96,16,.22)}
+
+/* BANNERS */
+.tcf{background:var(--ylb2);border:1px solid rgba(196,144,0,.3);border-radius:var(--rsm);padding:9px 13px;margin-bottom:13px;font-size:.78rem;color:var(--yl2);line-height:1.65;font-weight:600}
+.coach{background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:14px;margin-bottom:13px;display:flex;gap:11px;align-items:flex-start}
+.coachAv{font-size:1.9rem;flex-shrink:0}.coachName{font-size:.59rem;font-weight:700;color:var(--tr2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:3px;font-family:'Space Grotesk',sans-serif}
+.coachTxt{font-size:.82rem;color:var(--txt2);line-height:1.65}.coachTxt strong{color:var(--txt)}
+.infoBox{background:var(--bg3);border:1px solid var(--bdr2);border-radius:var(--rsm);padding:9px 12px;margin-bottom:12px;font-size:.8rem;color:var(--mut);line-height:1.6}.infoBox strong{color:var(--txt)}
+
+/* TRANSPORT VOCAB CARDS */
+.tGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:13px}
+@media(max-width:440px){.tGrid{grid-template-columns:1fr}}
+.tCard{background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:13px;box-shadow:var(--sh2);position:relative;overflow:hidden;transition:all .2s}
+.tCard:hover{border-color:var(--tr);transform:translateY(-2px);box-shadow:var(--sh)}
+.tCard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.tCard.pub::before{background:linear-gradient(90deg,var(--tr),#5080DF)}
+.tCard.priv::before{background:linear-gradient(90deg,var(--yl),var(--yl2))}
+.tCard.leis::before{background:linear-gradient(90deg,var(--gn),#2FAA68)}
+.tCard.free::before{background:linear-gradient(90deg,var(--pu),#9050C0)}
+.tEmoji{font-size:1.9rem;display:block;margin-bottom:5px}
+.tFr{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.92rem;color:var(--txt);margin-bottom:2px}
+.tEn{font-size:.74rem;color:var(--tr2);font-weight:600;margin-bottom:6px}
+.tDesc{font-size:.69rem;color:var(--mut);line-height:1.5;margin-bottom:6px;font-style:italic}
+.tTags{display:flex;flex-wrap:wrap;gap:4px}
+.tTag{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:50px}
+.tagPub{background:var(--trb);color:var(--tr2)}.tagPriv{background:var(--ylb);color:var(--yl2)}.tagFree{background:var(--pub);color:var(--pu)}.tagCheap{background:var(--gnb);color:var(--gn2)}.tagFast{background:var(--orb);color:var(--or)}.tagLeis{background:rgba(200,50,150,.1);color:#7A0050}
+
+/* ADJECTIVE CARDS */
+.adjGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}
+@media(max-width:430px){.adjGrid{grid-template-columns:repeat(2,1fr)}}
+.adjCard{background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:11px;padding:11px 8px;text-align:center;cursor:pointer;box-shadow:var(--sh2);transition:all .18s}
+.adjCard:hover{border-color:var(--tr);background:var(--trb2)}
+.adjFr{font-family:'Space Grotesk',sans-serif;font-size:.9rem;font-weight:700;color:var(--tr2);display:block;margin-bottom:3px}
+.adjEn{font-size:.68rem;color:var(--tr2);font-weight:600;display:block;margin-bottom:2px;background:var(--trb);padding:1px 7px;border-radius:50px;font-family:'Nunito',sans-serif}
+.adjOpp{font-size:.66rem;color:var(--mut);display:block;font-style:italic}
+
+/* FREQUENCY VISUAL */
+.freqGrid{display:flex;flex-direction:column;gap:8px;margin-bottom:13px}
+.freqCard{background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:13px;display:flex;align-items:center;gap:13px;box-shadow:var(--sh2)}
+.freqIcon{font-size:1.7rem;flex-shrink:0;width:40px;text-align:center}
+.freqFr{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:var(--txt);min-width:100px}
+.freqEn{font-size:.73rem;color:var(--tr2);font-weight:700;background:var(--trb);padding:2px 10px;border-radius:50px;white-space:nowrap}
+.freqBarWrap{flex:1;display:flex;flex-direction:column;gap:3px}
+.freqBar{height:8px;border-radius:99px;transition:width .5s ease}
+.freqPct{font-size:.62rem;color:var(--mut);font-weight:700}
+.freqEx{font-size:.73rem;color:var(--mut);font-family:'EB Garamond',serif;font-style:italic;margin-top:3px;line-height:1.4}
+
+/* DRAG & DROP MATCHING */
+.matchStage{background:var(--bg2);border:2px solid var(--bdr2);border-radius:var(--r);padding:16px;margin-bottom:13px}
+.matchBoard{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:440px){.matchBoard{grid-template-columns:1fr}}
+.matchWords{display:flex;flex-direction:column;gap:7px}
+.matchDefs{display:flex;flex-direction:column;gap:7px}
+.matchItem{background:var(--bg3);border:2px solid var(--bdr2);border-radius:10px;padding:10px 13px;cursor:grab;font-family:'EB Garamond',serif;font-size:.95rem;color:var(--txt);transition:all .2s;min-height:44px;display:flex;align-items:center;user-select:none}
+.matchItem:hover{border-color:var(--tr);background:var(--trb);color:var(--tr2)}
+.matchItem.dragging{opacity:.5;border-style:dashed;cursor:grabbing}
+.matchItem.selected{border-color:var(--yl)!important;background:var(--ylb)!important;color:var(--yl2)!important;box-shadow:0 0 0 3px rgba(196,144,0,.25)!important}
+.dropZone{background:var(--bg3);border:2px dashed var(--bdr);border-radius:10px;padding:10px 13px;font-size:.92rem;color:var(--mut);min-height:44px;display:flex;align-items:center;transition:all .2s}
+.dropZone.over{border-color:var(--tr);background:var(--trb2);border-style:solid}
+.dropZone.matched{border-color:var(--gn)!important;background:var(--gnb)!important;border-style:solid!important;color:var(--gn2)!important;font-weight:700}
+.dropZone.wrong{border-color:var(--rd)!important;background:var(--rdb)!important;border-style:solid!important;color:var(--rd)!important;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.matchTimer{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;color:var(--tr);text-align:center;margin-bottom:10px}
+.matchTimer.urgent{color:var(--rd);animation:pulse .5s infinite}
+.matchScore{font-size:.84rem;color:var(--gn2);font-weight:700;text-align:center;margin-top:10px;padding:9px;background:var(--gnb);border-radius:var(--rsm);display:none}
+.matchScore.show{display:block}
+
+/* GRAMMAR BOX */
+.gramBox{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1.5px solid var(--bdr);border-radius:var(--r);padding:15px;margin-bottom:12px}
+.gramTitle{font-family:'Space Grotesk',sans-serif;font-size:.88rem;font-weight:700;color:var(--tr2);margin-bottom:8px}
+.gramEx{font-family:'EB Garamond',serif;font-size:.92rem;color:var(--txt);line-height:2.0;background:rgba(255,255,255,.7);border-radius:var(--rsm);padding:10px 13px;margin-top:7px}
+.gramEx strong{color:var(--tr2)}
+
+/* VOCAB TOOLTIPS */
+.vf{cursor:pointer;color:var(--tr);font-weight:700;border-bottom:1.5px dashed rgba(35,71,160,.35);position:relative;display:inline}
+.vfT{display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);background:var(--txt);color:#fff;border-radius:9px;padding:7px 12px;min-width:180px;font-size:.74rem;z-index:999;box-shadow:0 4px 18px rgba(0,0,0,.25);line-height:1.6;white-space:normal;font-style:normal;font-family:'Nunito',sans-serif}
+.vfT::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--txt)}
+.vf:hover .vfT,.vf.tip-open .vfT{display:block}
+.vfEn{font-weight:700;color:#FFD700}.vfIpa{color:rgba(255,255,255,.65);font-size:.68rem;display:block;margin-top:1px}
+.link-word{color:var(--yl2);font-weight:700;background:var(--ylb);padding:1px 6px;border-radius:4px;font-family:'EB Garamond',serif}
+
+/* QUESTION DIALOGUE */
+.dlgWrap{margin-bottom:13px}
+.dlgPair{margin-bottom:11px}
+.dlgBubble{border-radius:14px;padding:11px 14px;margin-bottom:5px}
+.dlgBubble.q{background:var(--trb);border:1px solid rgba(35,71,160,.2);border-top-left-radius:4px;margin-right:20%}
+.dlgBubble.a{background:var(--gnb);border:1px solid rgba(26,122,68,.2);border-top-right-radius:4px;margin-left:20%}
+.dlgRole{font-size:.59rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;font-family:'Space Grotesk',sans-serif}
+.dlgRole.q{color:var(--tr2)}.dlgRole.a{color:var(--gn2);text-align:right}
+.dlgFr{font-family:'EB Garamond',serif;font-size:.92rem;color:var(--txt);line-height:1.6;margin-bottom:2px}
+.dlgEn{font-size:.72rem;color:var(--mut);font-style:italic;line-height:1.4}
+.dlgAud{font-size:.65rem;color:var(--tr);cursor:pointer;font-weight:700;background:none;border:none;padding:0;font-family:'Nunito',sans-serif;margin-top:3px}
+
+/* VLOG STORY CARDS */
+.vlogGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px}
+@media(max-width:440px){.vlogGrid{grid-template-columns:1fr}}
+.vlogPersonBtn{background:var(--bg2);border:2px solid var(--bdr2);border-radius:var(--r);padding:12px;cursor:pointer;transition:all .2s;text-align:center}
+.vlogPersonBtn.active{border-color:var(--tr);background:var(--trb);box-shadow:var(--sh)}
+.vlogPersonBtn:hover{border-color:var(--tr)}
+.vlogAvatar{font-size:2.2rem;display:block;margin-bottom:4px}
+.vlogName{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.82rem;color:var(--txt)}
+.vlogCity{font-size:.65rem;color:var(--mut);margin-top:1px}
+.vlogStoryBox{background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:16px;margin-bottom:13px;display:none}
+.vlogStoryBox.show{display:block;animation:sUp .28s ease}
+.vlogStoryHeader{display:flex;align-items:center;gap:11px;margin-bottom:13px;padding-bottom:11px;border-bottom:1px solid var(--bdr2)}
+.vlogStoryTxt{font-family:'EB Garamond',serif;font-size:.96rem;color:var(--txt);line-height:2.2}
+.vlogCompQ{background:var(--trb2);border:1px solid var(--bdr2);border-radius:var(--rsm);padding:10px 13px;margin-top:11px;font-size:.82rem;color:var(--txt2);line-height:1.6}
+.vlogCompQ strong{color:var(--tr2)}
+
+/* SIDE BY SIDE TIMED WRITING */
+.sideBySide{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+@media(max-width:480px){.sideBySide{grid-template-columns:1fr}}
+.sideRef{background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:13px;overflow-y:auto;max-height:350px}
+.sideRefLabel{font-size:.59rem;font-weight:700;color:var(--tr2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'Space Grotesk',sans-serif}
+.sideRefTxt{font-family:'EB Garamond',serif;font-size:.86rem;color:var(--txt2);line-height:2.0}
+.sideWrite{display:flex;flex-direction:column;gap:8px}
+.timedDisp{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:800;color:var(--tr);text-align:center}
+.timedDisp.urgent{color:var(--rd);animation:pulse .5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.writeTA{width:100%;background:var(--bg2);border:2px solid var(--bdr2);border-radius:var(--rsm);padding:11px 12px;font-size:.92rem;font-family:'EB Garamond',serif;outline:none;color:var(--txt);resize:none;line-height:1.75;transition:border-color .2s}
+.writeTA:focus{border-color:var(--tr)}.writeTA::placeholder{color:var(--mut);font-style:italic;font-size:.82rem}
+.wcD{font-size:.69rem;color:var(--mut);text-align:right}
+.acBar{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+.acBtn{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--bdr2);background:var(--bg2);font-family:'EB Garamond',serif;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--txt2)}
+.acBtn:hover{border-color:var(--tr);background:var(--trb);color:var(--tr2)}
+
+/* SIGN CARDS */
+.signBoard{background:linear-gradient(135deg,#1A2860,#2347A0);color:#fff;border-radius:var(--rsm);padding:14px;margin-bottom:10px;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:1px;line-height:1.8;font-size:.9rem}
+.signBoard.yl{background:linear-gradient(135deg,#806000,#C89800)}
+.signBoard.rd{background:linear-gradient(135deg,#801010,#B52020)}
+.signBoard.gn{background:linear-gradient(135deg,#0A4020,#1A7A44)}
+
+/* MCQ */
+.mcqW{background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:13px;margin-bottom:11px;box-shadow:var(--sh2)}
+.mcqQ{font-size:.87rem;font-weight:600;color:var(--txt);margin-bottom:9px;line-height:1.5}
+.mcqO{border:1.5px solid var(--bdr2);border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;font-size:.83rem;transition:all .18s;min-height:44px;display:flex;align-items:center;gap:8px;color:var(--txt);background:var(--bg3)}
+.mcqO:hover{border-color:var(--tr);background:var(--trb2)}.mcqO.co{border-color:var(--gn)!important;background:var(--gnb)!important;color:var(--gn2);font-weight:700}
+.mcqO.wo{border-color:var(--rd)!important;background:var(--rdb)!important;color:var(--rd);font-weight:700}.mcqO.dis{pointer-events:none}
+.mcqFb{font-size:.76rem;margin-top:6px;padding:8px 11px;border-radius:8px;display:none;font-weight:600;line-height:1.55}.mcqFb.show{display:block}
+
+/* INPUTS */
+.flInp{background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:6px;padding:5px 10px;font-size:.88rem;font-family:'EB Garamond',serif;outline:none;min-width:80px;min-height:34px;vertical-align:middle;color:var(--txt);transition:border-color .2s}
+.flInp:focus{border-color:var(--tr)}.flInp.ok{border-color:var(--gn);background:var(--gnb2)}.flInp.bad{border-color:var(--rd);background:var(--rdb)}.flInp::placeholder{color:var(--mut)}
+.sttLive{background:rgba(35,71,160,.06);border:1px dashed rgba(35,71,160,.3);border-radius:var(--rsm);padding:8px 11px;margin-top:7px;font-size:.82rem;color:var(--txt2);font-style:italic;display:none}
+.sttLive.show{display:block}
+.starterChips{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
+.starterC{background:var(--trb);border:1px solid rgba(35,71,160,.22);border-radius:50px;padding:5px 11px;font-size:.73rem;cursor:pointer;color:var(--tr2);font-weight:600;transition:all .18s;font-family:'EB Garamond',serif}
+.starterC:hover{background:var(--tr);color:#fff}
+
+/* BUTTONS */
+.bTr_{background:linear-gradient(135deg,var(--tr),var(--tr2));color:#fff;border:none;border-radius:50px;min-height:42px;padding:0 18px;font-size:.8rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .18s;font-family:'Nunito',sans-serif;box-shadow:0 3px 14px rgba(35,71,160,.28)}
+.bTr_:hover{opacity:.87;transform:translateY(-1px)}
+.bYl_{background:linear-gradient(135deg,var(--yl),var(--yl2));color:#fff;border:none;border-radius:50px;min-height:40px;padding:0 16px;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Nunito',sans-serif}
+.bGn_{background:linear-gradient(135deg,var(--gn),var(--gn2));color:#fff;border:none;border-radius:50px;min-height:42px;padding:0 18px;font-size:.8rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Nunito',sans-serif}
+.bOut{background:transparent;color:var(--tr);border:1.5px solid rgba(35,71,160,.35);border-radius:50px;min-height:40px;padding:0 15px;font-size:.77rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .18s;font-family:'Nunito',sans-serif}
+.bOut:hover{background:var(--trb)}
+.bRec{background:linear-gradient(135deg,#8B2020,#6A0F0F);color:#fff;border:none;border-radius:50px;min-height:40px;padding:0 16px;font-size:.77rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Nunito',sans-serif}
+.bRec.on{animation:rp 1.1s infinite}
+@keyframes rp{0%,100%{box-shadow:0 0 0 0 rgba(139,32,32,.5)}50%{box-shadow:0 0 0 10px rgba(139,32,32,0)}}
+.bPb{background:var(--bg3);color:var(--txt2);border:1.5px solid var(--bdr2);border-radius:50px;min-height:38px;padding:0 13px;font-size:.75rem;font-weight:700;cursor:pointer;display:none;align-items:center;gap:5px;font-family:'Nunito',sans-serif}
+.bPb.show{display:inline-flex}
+.redoB{background:var(--bg3);color:var(--mut);border:1px solid var(--bdr2);border-radius:50px;padding:7px 14px;font-size:.71rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .18s}
+.redoB:hover{border-color:var(--tr);color:var(--tr)}
+.audRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;align-items:center}
+.navBar{display:flex;justify-content:space-between;margin-top:20px;gap:10px}
+.bNxt{background:linear-gradient(135deg,var(--tr),var(--tr2));color:#fff;border:none;border-radius:50px;min-height:50px;padding:0 28px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Space Grotesk',sans-serif;box-shadow:0 5px 22px rgba(35,71,160,.3)}
+.bNxt:hover{transform:translateY(-2px)}
+.bPrv{background:var(--bg2);color:var(--txt2);border:1.5px solid var(--bdr2);border-radius:50px;min-height:48px;padding:0 20px;font-size:.83rem;font-weight:600;cursor:pointer;transition:all .18s}
+.bPrv:hover{border-color:var(--tr);color:var(--tr)}
+
+/* SCORES & FEEDBACK */
+.scoreBox{background:var(--gnb);border:1.5px solid var(--gn);border-radius:var(--rsm);padding:13px;text-align:center;display:none;margin-top:10px}
+.scoreBox.show{display:block}.scoreN{font-size:1.9rem;font-weight:900;color:var(--gn2);font-family:'Space Grotesk',sans-serif}
+.coachFb{background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:14px;margin-top:12px;display:none}
+.coachFb.show{display:block}.cfbLbl{font-size:.59rem;font-weight:700;color:var(--tr2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;font-family:'Space Grotesk',sans-serif}
+.cfbTxt{font-size:.83rem;color:var(--txt2);line-height:1.7}.cfbLoad{text-align:center;color:var(--mut);font-size:.82rem;padding:8px}
+
+/* CERTIFICATE */
+.certCard{background:linear-gradient(160deg,#EEF4FF,#D8E8FF,#EEF4FF);border:2px solid rgba(35,71,160,.3);border-radius:22px;padding:24px 20px;text-align:center;margin:18px 0;box-shadow:0 8px 40px rgba(35,71,160,.15)}
+.certTop{font-family:'Space Grotesk',sans-serif;font-size:.62rem;font-weight:800;color:var(--tr2);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.certBadge{font-size:3rem;margin-bottom:8px;display:block}
+.certTitle{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:800;color:var(--tr2);margin-bottom:5px}
+.certItems{text-align:left;background:rgba(255,255,255,.7);border-radius:var(--r);padding:14px 16px;margin:14px 0}
+.certItem{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:.84rem;color:var(--txt2);line-height:1.55;border-bottom:1px solid rgba(35,71,160,.1)}
+.certItem:last-child{border-bottom:none}
+.certFooter{font-size:.68rem;color:var(--tr2);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-family:'Space Grotesk',sans-serif}
+
+/* STREAK / TOAST / CONFETTI / FLOAT */
+.streakToast{position:fixed;top:75px;left:50%;transform:translateX(-50%);z-index:550;background:linear-gradient(135deg,var(--yl),var(--yl2));color:#fff;border-radius:50px;padding:9px 22px;font-size:.82rem;font-weight:700;box-shadow:0 4px 20px rgba(196,144,0,.4);display:none;white-space:nowrap;font-family:'Space Grotesk',sans-serif;animation:bounceIn .35s ease}
+@keyframes bounceIn{0%{opacity:0;transform:translateX(-50%) scale(.7)}70%{transform:translateX(-50%) scale(1.08)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
+.cfB{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none}
+.cf{position:absolute;width:7px;height:7px;border-radius:2px;animation:fall 2.2s ease forwards}
+@keyframes fall{0%{opacity:1;transform:translateY(-10px) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+#toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:600;background:var(--txt);color:#fff;border-radius:50px;padding:8px 18px;font-size:.75rem;font-weight:700;box-shadow:var(--sh);display:none;white-space:nowrap;max-width:90vw;font-family:'Nunito',sans-serif}
+.cfloat{position:fixed;bottom:13px;right:13px;z-index:500;display:flex;flex-direction:column;align-items:flex-end}
+.cbubble{background:var(--bg2);border-radius:14px;border:1.5px solid var(--bdr2);padding:10px 13px;max-width:215px;margin-bottom:8px;box-shadow:var(--sh);font-size:.76rem;color:var(--txt2);line-height:1.55;display:none}
+.cbubble.show{display:block;animation:sUp .28s ease}
+.cbName{font-size:.58rem;font-weight:700;color:var(--tr2);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;font-family:'Space Grotesk',sans-serif}
+.cav{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--tr),var(--tr2));border:3px solid var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.35rem;cursor:pointer;animation:flt 3s ease-in-out infinite;box-shadow:var(--sh)}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+#dictFab{position:fixed;bottom:72px;right:13px;z-index:400;width:44px;height:44px;border-radius:50%;background:var(--bg2);color:var(--tr);border:1.5px solid var(--bdr2);font-size:1.05rem;cursor:pointer;box-shadow:var(--sh);display:none;align-items:center;justify-content:center;transition:all .18s}
+#dictFab:hover{border-color:var(--tr);transform:scale(1.08)}
+#dictP{position:fixed;bottom:0;left:0;right:0;z-index:600;background:var(--bg2);border-radius:22px 22px 0 0;padding:17px 15px 28px;box-shadow:0 -8px 36px rgba(35,71,160,.12);transform:translateY(100%);transition:transform .3s;max-height:72vh;overflow-y:auto;border-top:1.5px solid var(--bdr2)}
+#dictP.open{transform:translateY(0)}
+.dpH{width:34px;height:3px;background:var(--bdr2);border-radius:99px;margin:0 auto 13px}
+.dpRow{display:flex;gap:7px;margin:10px 0}
+#dpW{flex:1;padding:9px 12px;background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:50px;font-size:.86rem;outline:none;color:var(--txt);font-family:'Nunito',sans-serif}
+#dpW:focus{border-color:var(--tr)}
+#dpGo{background:linear-gradient(135deg,var(--tr),var(--tr2));color:#fff;border:none;border-radius:50px;padding:9px 16px;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer}
+#dpLks{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.dpLk{background:var(--trb);color:var(--tr2);padding:7px 13px;border-radius:50px;font-size:.77rem;font-weight:700;border:1px solid var(--bdr2);cursor:pointer;transition:all .18s}
+.dpLk:hover{background:var(--tr);color:#fff}
+#dpX{position:absolute;top:13px;right:13px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--mut)}
+#compSc{display:none;padding:2rem 1rem 4rem;max-width:520px;margin:0 auto}
+#compSc.show{display:block;animation:sUp .4s ease}
+</style></head><body>
+<div class="cfB" id="cfB"></div>
+<div class="streakToast" id="streakToast"></div>
+<div id="toast"></div>
+
+<div id="wModal">
+<div class="wCard" style="text-align:center">
+  <div class="wBadge">🚌 Jour 16 — Les Transports</div>
+  <div class="wLogo">FAST <em>FRENCH</em> LAB</div>
+  <p class="wSub" style="margin-top:5px">Moving around town · Public & private · Preferences<br>Speaking + Writing · TEF/TCF + Daily Life</p>
+  <div style="margin-bottom:12px">
+    <div style="font-size:.6rem;font-weight:700;color:var(--tr2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">How are you feeling today?</div>
+    <div class="moodRow" id="mSRow"><button class="moodBtn" data-mood="😩">😩</button><button class="moodBtn" data-mood="😐">😐</button><button class="moodBtn" data-mood="🙂">🙂</button><button class="moodBtn" data-mood="😄">😄</button><button class="moodBtn" data-mood="🔥">🔥</button></div>
+  </div>
+  <div class="wFg"><label>Your Full Name</label><input type="text" id="wName" placeholder="Ex: Amara Diallo" autocomplete="name"><p class="wErr" id="wNE">Please enter your name.</p></div>
+  <div class="wFg"><label>Email Address</label><input type="email" id="wEmail" placeholder="Ex: amara@email.com" autocomplete="email"><p class="wErr" id="wEE">Please enter a valid email.</p></div>
+  <button class="wBtn" id="wStartBtn">🚌 Start Day 16 — Commencer !</button>
+</div>
+</div>
+
+<div class="hdr">
+  <div class="logo">FAST <em>FRENCH</em> LAB</div>
+  <div class="hdrR"><button id="musicBtn" title="Background music">🎵</button><div class="dayPill">🚌 JOUR 16</div></div>
+</div>
+<div class="progWrap">
+  <div class="progSegs" id="pSegs"></div>
+  <div class="progLbl"><span>Vocab</span><span>Match Game</span><span>Grammar</span><span>Vlogs</span><span>Écriture</span><span>Panneaux</span><span>Certificat</span></div>
+</div>
+
+<div class="wrap">
+<div class="dots" id="dotsW"></div>
+
+<!-- SEC 1: VOCAB + FREQUENCY -->
+<div class="sec show" id="sec1">
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iT">🚌</div><div><div class="cardTitle">Part 1 — Les Transports + Les Adjectifs</div><div class="cardSub">English always shown · Hover any blue word for meaning · Click 🔊 to hear</div></div></div>
+  <div class="tcf">📌 <strong>TEF/TCF + Everyday French:</strong> You will need this vocabulary at bus stops, in conversation, in exams. English is shown below each word — no hiding here! Click any <span style="color:var(--tr);font-weight:700;border-bottom:1px dashed rgba(35,71,160,.4)">blue underlined word</span> in stories to see meaning.</div>
+  <div class="badge bTr">🚌 Les moyens de transport — English always visible!</div>
+  <div class="tGrid" id="transCards"></div>
+  <div class="audRow" style="margin-bottom:13px"><button class="bTr_" id="hearAllBtn">🔊 Hear All</button></div>
+  <div class="badge bYl" style="margin-top:4px">📐 Adjectifs — English shown · Audio available</div>
+  <div class="adjGrid" id="adjCards"></div>
+  <div class="audRow" style="margin-bottom:13px"><button class="bTr_" id="hearAdjBtn">🔊 Hear All Adjectives</button></div>
+</div>
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iY">📊</div><div><div class="cardTitle">Les mots de fréquence · Frequency Words</div><div class="cardSub">Visual degree scale · Icons · English shown · From past lessons too!</div></div></div>
+  <div class="coach"><div class="coachAv">👩🏾‍🏫</div><div><div class="coachName">Coach Linda</div><div class="coachTxt">"These frequency words go <strong>AFTER the verb</strong> — not before! You saw them in Days 10-12: <em>je mange souvent</em>, <em>elle part parfois</em>. The scale below shows HOW OFTEN — look at the bar! These will appear in your vlog story and writing today."</div></div></div>
+  <div class="freqGrid" id="freqCards"></div>
+</div>
+<div class="navBar"><div></div><button class="bNxt" id="s1Next">Matching Game →</button></div>
+</div>
+
+<!-- SEC 2: DRAG AND DROP MATCHING GAME -->
+<div class="sec" id="sec2">
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iO">🎮</div><div><div class="cardTitle">Part 2 — Match the Words! Game</div><div class="cardSub">Drag French → English · Or tap to select then tap to match · Timer!</div></div></div>
+  <div class="tcf">📌 This game uses vocabulary from TODAY and from previous labs (Days 10-15). Can you recognise them all? You have 3 minutes!</div>
+  <div class="coach"><div class="coachAv">👩🏾‍🏫</div><div><div class="coachName">Coach Linda</div><div class="coachTxt">"<strong>Desktop:</strong> Drag each French word on the left to its English meaning on the right. <strong>Mobile:</strong> Tap a French word to select it (it turns yellow), then tap the matching English. Beat the timer — 3 minutes!"</div></div></div>
+  <div class="matchTimer" id="matchTimer">3:00</div>
+  <div style="display:flex;gap:9px;margin-bottom:11px;flex-wrap:wrap">
+    <button class="bTr_" id="startMatchBtn">▶ Start Game</button>
+    <button class="redoB" id="resetMatchBtn">🔄 Reset</button>
+    <div style="font-size:.82rem;color:var(--mut);align-self:center" id="matchProgress">0 / 10 matched</div>
+  </div>
+  <div class="matchStage">
+    <div class="matchBoard">
+      <div class="matchWords" id="matchWords"></div>
+      <div class="matchDefs" id="matchDefs"></div>
+    </div>
+  </div>
+  <div class="matchScore" id="matchScore"></div>
+</div>
+<div class="navBar"><button class="bPrv" id="s2Prev">← Back</button><button class="bNxt" id="s2Next">Grammar →</button></div>
+</div>
+
+<!-- SEC 3: GRAMMAR + QUESTION DIALOGUES -->
+<div class="sec" id="sec3">
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iT">📐</div><div><div class="cardTitle">Part 3A — Grammaire : en ou à ?</div><div class="cardSub">The most common grammar test point for transport</div></div></div>
+  <div class="gramBox">
+    <div class="gramTitle">⚡ Rule: en + engine | à + personal power</div>
+    <div class="gramEx fr">
+      <strong>en</strong> voiture · <strong>en</strong> bus · <strong>en</strong> taxi · <strong>en</strong> métro · <strong>en</strong> avion<br>
+      <span style="font-size:.75rem;color:var(--mut);font-family:Nunito,sans-serif">→ These all have ENGINES — use <strong>en</strong></span><br><br>
+      <strong>à</strong> pied · <strong>à</strong> vélo · <strong>à</strong> moto<br>
+      <span style="font-size:.75rem;color:var(--mut);font-family:Nunito,sans-serif">→ Personal power (no engine) — use <strong>à</strong></span>
+    </div>
+  </div>
+  <div class="badge bTr" style="margin-top:4px">🎯 Drill — en or à?</div>
+  <div id="gramDrill"></div>
+  <div class="audRow"><button class="bTr_" id="checkGDBtn">✅ Check</button><button class="redoB" id="resetGDBtn">🔄 Redo</button></div>
+  <div id="gdFb" style="display:none;margin-top:9px;padding:11px;border-radius:10px;font-size:.82rem;font-weight:700;line-height:1.7"></div>
+</div>
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iP">💬</div><div><div class="cardTitle">Part 3B — Questions sur les transports</div><div class="cardSub">See how questions are asked and answered naturally · Dialogue style</div></div></div>
+  <div class="tcf">📌 <strong>TEF/TCF Oral:</strong> Examiners ask exactly these questions. Study HOW people answer — notice the structure, the adjectives, and the linking words used.</div>
+  <div id="dialogSection"></div>
+</div>
+<div class="navBar"><button class="bPrv" id="s3Prev">← Back</button><button class="bNxt" id="s3Next">Vlog Stories →</button></div>
+</div>
+
+<!-- SEC 4: VLOG STORIES (4 people) -->
+<div class="sec" id="sec4">
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iO">🎥</div><div><div class="cardTitle">Part 4 — Quatre vlogs de transport</div><div class="cardSub">4 real people · Hover blue words for English · Linking words highlighted · Audio for each</div></div></div>
+  <div class="tcf">📌 <strong>TEF/TCF Listening + Reading:</strong> Reading and listening to how people describe their transport habits is how you absorb the language patterns. Notice the <span style="background:var(--ylb);color:var(--yl2);padding:1px 6px;border-radius:4px;font-weight:700">yellow linking words</span> — they connect ideas. Hover any <span style="color:var(--tr);font-weight:700;border-bottom:1.5px dashed rgba(35,71,160,.4)">blue word</span> to see the English.</div>
+  <div class="coach"><div class="coachAv">👩🏾‍🏫</div><div><div class="coachName">Coach Linda</div><div class="coachTxt">"Click a person's card to read their vlog story. Press 🔊 to hear it read aloud. Hover any underlined word for the meaning. After reading all 4 — you write your own! Many words here come from <strong>Days 10-15</strong> — how many do you recognise?"</div></div></div>
+  <div class="vlogGrid" id="vlogPersonGrid"></div>
+  <div id="vlogStories"></div>
+</div>
+<div class="navBar"><button class="bPrv" id="s4Prev">← Back</button><button class="bNxt" id="s4Next">Write Yours →</button></div>
+</div>
+
+<!-- SEC 5: SIDE-BY-SIDE TIMED WRITING -->
+<div class="sec" id="sec5">
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iG">⏱️</div><div><div class="cardTitle">Part 5 — Écris ton vlog en 3 minutes !</div><div class="cardSub">Story on the left · Write on the right · Screenshot → record your video</div></div></div>
+  <div class="tcf">📌 <strong>TEF/TCF Written Production:</strong> This mirrors the timed writing section of the TEF. 3 minutes to write about your transport habits using adjectives, frequency words, and at least one comparison. Go!</div>
+  <div class="coach"><div class="coachAv">👩🏾‍🏫</div><div><div class="coachName">Coach Linda</div><div class="coachTxt">"The story is on the LEFT for reference. Your writing goes on the RIGHT. Don't copy — use the story as inspiration. Use: <em>d'habitude, souvent, parfois, parce que, mais</em>, and one comparison (<em>plus... que</em>). Press ▶ Start and GO!"</div></div></div>
+  <div class="timedDisp" id="timedDisp">3:00</div>
+  <div class="audRow" style="justify-content:center;margin-bottom:11px"><button class="bTr_" id="startTimedBtn">▶ Start 3-Minute Challenge</button></div>
+  <div class="sideBySide">
+    <div class="sideRef">
+      <div class="sideRefLabel">📖 Reference story — read, don't copy!</div>
+      <div class="sideRefTxt" id="sideRefTxt"></div>
+    </div>
+    <div class="sideWrite">
+      <div class="starterChips" id="sideStarters"></div>
+      <div class="acBar" id="acBarTimed"></div>
+      <textarea class="writeTA" id="timedTA" rows="10" placeholder="Write your own transport vlog here... D'habitude, je... Parfois... Je préfère... parce que c'est... plus... que..." disabled style="flex:1;min-height:220px"></textarea>
+      <div class="wcD" id="timedWC">0 words</div>
+      <div class="sttLive" id="timedSttLive"></div>
+      <div class="audRow">
+        <button class="bTr_" id="checkTimedBtn" style="display:none">✅ Get Correction</button>
+        <button class="bRec" id="timedSttBtn">🎤 Speak</button>
+        <button class="bPb" id="timedPbBtn">▶️</button>
+      </div>
+    </div>
+  </div>
+  <div class="coachFb" id="timedCoach"><div class="cfbLbl">👩🏾‍🏫 Full Correction — Coach Linda</div><div class="cfbTxt" id="timedCoachTxt"></div></div>
+  <div id="videoCard" style="background:linear-gradient(160deg,#1A2860,#0A1440);border-radius:var(--r);padding:18px;margin-top:13px;text-align:center;border:2px solid rgba(196,144,0,.3);display:none">
+    <div style="font-family:Space Grotesk,sans-serif;font-size:.63rem;font-weight:700;color:#C89800;text-transform:uppercase;letter-spacing:2px;margin-bottom:11px">📹 Video Challenge</div>
+    <div style="font-size:3rem;margin-bottom:11px;animation:flt 2s ease-in-out infinite">📹</div>
+    <div style="font-size:.83rem;color:#C8D8FF;line-height:1.75;margin-bottom:13px">Now record your <strong style="color:#C89800">60-second video</strong> about your transport habits!<br>Use your written text as a guide — speak naturally, not reading.<br><strong style="color:#C89800">Send to the Fast French Lab WhatsApp group!</strong></div>
+    <button class="bYl_" style="margin:0 auto;display:flex;justify-content:center">📸 Screenshot this challenge card!</button>
+  </div>
+</div>
+<div class="navBar"><button class="bPrv" id="s5Prev">← Back</button><button class="bNxt" id="s5Next">Signs →</button></div>
+</div>
+
+<!-- SEC 6: SIGNS READING -->
+<div class="sec" id="sec6">
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iT">🪧</div><div><div class="cardTitle">Part 6 — Lire les Panneaux · Reading Transport Signs</div><div class="cardSub">Real signs · Read fast · TEF reading format</div></div></div>
+  <div class="tcf">📌 <strong>TEF/TCF Reading:</strong> Informational signs are a common reading format. Identify the KEY word — the sign's meaning depends on one or two crucial words.</div>
+  <div id="signCards"></div>
+  <div class="badge bTr" style="margin-top:14px">📝 Sign Comprehension Quiz</div>
+  <div id="signQuiz"></div>
+  <div class="audRow"><button class="bTr_" id="checkSQBtn">✅ Check</button><button class="redoB" id="resetSQBtn">🔄 Redo</button></div>
+  <div class="scoreBox" id="sqScore"><div class="scoreN" id="sqScoreN">0/6</div><p style="font-size:.77rem;color:var(--gn2);margin-top:4px;font-weight:600">Signs Score</p></div>
+</div>
+<div class="navBar"><button class="bPrv" id="s6Prev">← Back</button><button class="bNxt" id="s6Next">Certificate →</button></div>
+</div>
+
+<!-- SEC 7: FINAL QUIZ + CERTIFICATE -->
+<div class="sec" id="sec7">
+<div class="card">
+  <div class="cardHdr"><div class="cardIco iG">🏆</div><div><div class="cardTitle">Part 7 — Quiz Final + Certificat</div><div class="cardSub">10 questions · Complete Day 16</div></div></div>
+  <div id="finalQuiz"></div>
+  <div class="scoreBox" id="quizSc"><div class="scoreN" id="quizScN">0/10</div><p style="font-size:.77rem;color:var(--gn2);margin-top:4px;font-weight:600" id="quizScLbl">Final Score</p></div>
+  <div id="reflWrap" style="display:none;margin-top:14px">
+    <div class="badge bTr">📝 Reflection (optional)</div>
+    <div id="reflQs"></div>
+    <div style="background:var(--bg3);border:1px solid var(--bdr2);border-radius:var(--r);padding:13px;margin-top:12px">
+      <div style="font-size:.59rem;font-weight:700;color:var(--tr2);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;font-family:Space Grotesk,sans-serif">How are you feeling NOW?</div>
+      <div class="moodRow" id="mERow" style="justify-content:flex-start;gap:7px;flex-wrap:wrap">
+        <button class="moodBtn" data-emood="😩">😩</button><button class="moodBtn" data-emood="😐">😐</button><button class="moodBtn" data-emood="🙂">🙂</button><button class="moodBtn" data-emood="😄">😄</button><button class="moodBtn" data-emood="🔥">🔥</button>
+      </div>
+    </div>
+    <button class="bNxt" id="completeBtn" style="width:100%;justify-content:center;margin-top:15px;display:flex">🎉 Get My Certificate!</button>
+  </div>
+</div>
+<div class="navBar"><button class="bPrv" id="s7Prev">← Back</button></div>
+</div>
+
+<!-- COMPLETION -->
+<div id="compSc">
+  <div style="text-align:center;margin-bottom:18px">
+    <div style="font-size:3rem;margin-bottom:8px">🎉</div>
+    <h1 style="font-family:Space Grotesk,sans-serif;font-size:1.5rem;color:var(--tr2);margin-bottom:4px">Félicitations !</h1>
+    <p style="color:var(--mut);font-size:.84rem">Day 16 complete · Vous savez vous déplacer en français !</p>
+  </div>
+  <div class="certCard">
+    <div class="certTop">Fast French Lab · Jour 16</div>
+    <span class="certBadge">🚌</span>
+    <div class="certTitle">Je peux maintenant...</div>
+    <div class="certItems" id="certItems"></div>
+    <div class="certFooter">Certified by Coach Linda · Fast French Lab</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0">
+    <div style="background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:13px;text-align:center"><div style="font-size:1.2rem">✍️</div><div style="font-size:1.4rem;font-weight:900;color:var(--tr2);font-family:Space Grotesk,sans-serif" id="stWords">0</div><div style="font-size:.69rem;color:var(--mut)">Words written</div></div>
+    <div style="background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:13px;text-align:center"><div style="font-size:1.2rem">🏆</div><div style="font-size:1.4rem;font-weight:900;color:var(--tr2);font-family:Space Grotesk,sans-serif" id="stQuiz">—%</div><div style="font-size:.69rem;color:var(--mut)">Quiz score</div></div>
+  </div>
+  <div id="saveCon" style="background:var(--gnb);border:1px solid var(--gn);border-radius:var(--rsm);padding:9px;font-size:.77rem;color:var(--gn2);font-weight:700;margin:9px 0;display:none">✅ Progress saved!</div>
+  <div style="background:var(--ylb2);border:1.5px solid rgba(196,144,0,.3);border-radius:var(--rsm);padding:12px;font-size:.79rem;color:var(--yl2);font-weight:600;margin:9px 0;text-align:center">📸 Screenshot certificate + record your 60-second transport video!</div>
+  <div style="background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:14px;margin-top:13px;font-size:.82rem;color:var(--txt2);line-height:1.75"><span style="color:var(--tr2);font-weight:700;font-family:Space Grotesk,sans-serif">👩🏾‍🏫 Coach Linda:</span> "Vous savez maintenant comment vous déplacer EN FRANÇAIS — en bus, à vélo, en taxi, à pied. You can say where, how, how often, and why you prefer one over another. That is REAL conversational French. Jusqu'au Jour 17 !"</div>
+</div>
+</div>
+
+<div class="cfloat"><div class="cbubble" id="cb"><div class="cbName">Coach Linda</div><span id="cbTxt"></span></div><div class="cav" id="coachAv">👩🏾‍🏫</div></div>
+<button id="dictFab" title="Dictionary">📖</button>
+<div id="dictP">
+  <button id="dpX">×</button><div class="dpH"></div>
+  <h3 style="font-size:.88rem;font-weight:700;margin-bottom:3px;color:var(--txt)">📖 French Dictionary</h3>
+  <p style="font-size:.69rem;color:var(--mut);margin-bottom:9px">Look up any word you need!</p>
+  <div class="dpRow"><input type="text" id="dpW" placeholder="Type a French word..." autocomplete="off"><button id="dpGo">Look up →</button></div>
+  <div id="dpLks"></div>
+</div>
+<script>
+var AT_TOKEN='patUosqmnatcmyQ9b.122d09bdf7cce0da1444baf44f88eb6ddb41aa27312a1ec65ca5cd700c51a2e9';
+var AT_BASE='appYOYauNLO2qcSaT';var AM='claude-sonnet-4-6';
+var AT_L='Lesson Submissions';var AT_S='Speaking Progress';var AT_R='Reflection Journal';
+var sN='',sE='',mS='',mE='';
+var curSec=1,cTmr=null,spkN=0,blobs={},mRecs={};
+var sqDone={},quizDone={};
+var consecutiveCorrect=0,totalCorrect=0;
+var frVoice=null,sttRecog=null,sttActive=false,musicPlaying=false;
+var matchRunning=false,matchTimer=null,matchSecs=180,selectedWord=null,matchedCount=0;
+var timedRunning=false,timedTimer=null,timedSecs=180;
+var ACCENTS=['é','è','ê','ë','à','â','ù','û','ô','î','ï','ç','œ'];
+
+// ─── SOUND ───
+function getAC(){if(!window._ac)window._ac=new(window.AudioContext||window.webkitAudioContext)();return window._ac;}
+function playChime(){try{var c=getAC();[[523.25,0],[659.25,.16],[783.99,.3]].forEach(function(p){var o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=p[0];o.type='sine';g.gain.setValueAtTime(0,c.currentTime+p[1]);g.gain.linearRampToValueAtTime(.22,c.currentTime+p[1]+.015);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+p[1]+.55);o.start(c.currentTime+p[1]);o.stop(c.currentTime+p[1]+.56);});}catch(e){}}
+function playSectionDing(){try{var c=getAC();[[523.25,0],[659.25,.18],[783.99,.34],[1046.5,.5]].forEach(function(p){var o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=p[0];o.type='triangle';g.gain.setValueAtTime(0,c.currentTime+p[1]);g.gain.linearRampToValueAtTime(.2,c.currentTime+p[1]+.02);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+p[1]+.5);o.start(c.currentTime+p[1]);o.stop(c.currentTime+p[1]+.52);});}catch(e){}}
+function playFanfare(){try{var c=getAC();[523.25,659.25,783.99,659.25,783.99,1046.5,880,1046.5].forEach(function(f,i){var o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='triangle';g.gain.setValueAtTime(0,c.currentTime+i*.14);g.gain.linearRampToValueAtTime(.18,c.currentTime+i*.14+.02);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.14+.38);o.start(c.currentTime+i*.14);o.stop(c.currentTime+i*.14+.4);});}catch(e){}}
+function playStreakSound(){try{var c=getAC();[[880,0],[1046.5,.12],[1318.5,.22]].forEach(function(p){var o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=p[0];o.type='sine';g.gain.setValueAtTime(0,c.currentTime+p[1]);g.gain.linearRampToValueAtTime(.15,c.currentTime+p[1]+.01);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+p[1]+.35);o.start(c.currentTime+p[1]);o.stop(c.currentTime+p[1]+.36);});}catch(e){}}
+function startCafe(){try{if(musicPlaying)return;musicPlaying=true;var c=getAC();var step=0;var chords=[[261.63,329.63,392],[293.66,369.99,440],[246.94,311.13,392],[261.63,329.63,392]];function tick(){if(!musicPlaying)return;chords[step%4].forEach(function(f){var o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(.028,c.currentTime+.05);g.gain.setValueAtTime(.028,c.currentTime+1.2);g.gain.linearRampToValueAtTime(0,c.currentTime+1.6);o.start(c.currentTime);o.stop(c.currentTime+1.65);});step++;window._cafeTmr=setTimeout(tick,1800);}tick();}catch(e){musicPlaying=false;}}
+function stopCafe(){musicPlaying=false;clearTimeout(window._cafeTmr);}
+function onCorrect(sEnd){consecutiveCorrect++;totalCorrect++;playChime();if(consecutiveCorrect===3){showStreakToast('🔥 3 in a row!');playStreakSound();consecutiveCorrect=0;}if(sEnd)playSectionDing();}
+
+// ─── VOICE ───
+function loadFrVoice(){return new Promise(function(res){var t=function(n){var vs=speechSynthesis.getVoices();var v=vs.find(function(v){return v.lang==='fr-FR'&&/thomas|nicolas/i.test(v.name);})||vs.find(function(v){return v.lang==='fr-FR'&&/google/i.test(v.name);})||vs.find(function(v){return v.lang==='fr-FR';})||vs.find(function(v){return v.lang.startsWith('fr');});if(v||n<=0)res(v||null);else setTimeout(function(){t(n-1);},300);};speechSynthesis.onvoiceschanged=function(){t(0);};t(10);});}
+window.addEventListener('load',function(){loadFrVoice().then(function(v){frVoice=v;});});
+function spk(t,btn,rate){if(!t||!t.trim())return;var was=musicPlaying;if(was)stopCafe();speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);if(frVoice)u.voice=frVoice;u.lang='fr-FR';u.rate=rate||0.82;u.pitch=0.95;if(btn&&btn.textContent){var o=btn.textContent;btn.textContent='⏸...';u.onend=function(){btn.textContent=o;if(was)startCafe();};}speechSynthesis.speak(u);}
+
+// ─── STT ───
+function startSTT(taId,liveId,btnEl){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showCoach('Speech recognition needs Chrome!',4000);return;}if(sttActive){sttRecog&&sttRecog.stop();return;}sttRecog=new SR();sttRecog.lang='fr-FR';sttRecog.continuous=false;sttRecog.interimResults=true;sttActive=true;if(btnEl){btnEl.textContent='⏹ Stop';btnEl.classList.add('on');}var live=liveId?document.getElementById(liveId):null;if(live)live.classList.add('show');sttRecog.onresult=function(e){var t=Array.from(e.results).map(function(r){return r[0].transcript;}).join('');if(live)live.textContent='🗣️ '+t;var ta=taId?document.getElementById(taId):null;if(ta)ta.value=t;};sttRecog.onend=function(){sttActive=false;if(btnEl){btnEl.textContent='🎤 Speak';btnEl.classList.remove('on');}spkN++;};sttRecog.onerror=function(){sttActive=false;if(btnEl){btnEl.textContent='🎤 Speak';btnEl.classList.remove('on');}};sttRecog.start();}
+
+// ─── RECORDING ───
+function dRec(rId,pbId,btn){if(btn.classList.contains('on')){if(mRecs[rId]&&mRecs[rId].state==='recording')mRecs[rId].stop();return;}navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){var ch=[];var mr=new MediaRecorder(st);mRecs[rId]=mr;mr.ondataavailable=function(e){if(e.data.size>0)ch.push(e.data);};mr.onstop=function(){blobs[pbId]=new Blob(ch,{type:'audio/webm'});st.getTracks().forEach(function(t){t.stop();});btn.textContent='🎤 Speak';btn.classList.remove('on');var pb=document.getElementById(pbId);if(pb)pb.classList.add('show');spkN++;};mr.start();btn.textContent='⏹ Stop';btn.classList.add('on');}).catch(function(){showCoach('Mic unavailable.',3000);});}
+function pBlob(id){if(!blobs[id])return;new Audio(URL.createObjectURL(blobs[id])).play();}
+
+// ─── ACCENT BAR ───
+function buildAB(cId,tId){var c=document.getElementById(cId);if(!c)return;c.innerHTML=ACCENTS.map(function(a){return '<button class="acBtn acIns" data-char="'+a+'" data-tgt="'+tId+'">'+a+'</button>';}).join('');}
+document.addEventListener('click',function(ev){var b=ev.target.closest('.acIns');if(!b)return;var t=document.getElementById(b.dataset.tgt);if(!t)return;var s=t.selectionStart||t.value.length,e=t.selectionEnd||t.value.length;t.value=t.value.slice(0,s)+b.dataset.char+t.value.slice(e);t.focus();t.selectionStart=t.selectionEnd=s+1;});
+
+function selMood(el,isEnd){var row=isEnd?'mERow':'mSRow';document.getElementById(row).querySelectorAll('.moodBtn').forEach(function(b){b.classList.remove('sel');});el.classList.add('sel');if(isEnd)mE=el.dataset.emood;else mS=el.dataset.mood;}
+function updateWC(wcId,taId){var t=document.getElementById(taId).value.trim();document.getElementById(wcId).textContent=(t?t.split(/\s+/).filter(function(w){return w.length>0;}).length:0)+' words';}
+
+function goSec(n){document.getElementById('sec'+curSec).classList.remove('show');curSec=n;var s=document.getElementById('sec'+n);if(s)s.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});updDots();updProg();consecutiveCorrect=0;}
+function buildDots(){document.getElementById('dotsW').innerHTML=[1,2,3,4,5,6,7].map(function(i){return '<div class="dot'+(i===1?' active':'')+'" id="dot'+i+'">'+i+'</div>';}).join('');}
+function updDots(){for(var i=1;i<=7;i++){var d=document.getElementById('dot'+i);if(d)d.className='dot'+(i<curSec?' done':i===curSec?' active':'');}}
+function buildPS(){document.getElementById('pSegs').innerHTML=[1,2,3,4,5,6,7].map(function(i){return '<div class="pSeg" id="ps'+i+'"></div>';}).join('');}
+function updProg(){for(var i=1;i<=7;i++){var s=document.getElementById('ps'+i);if(s)s.className='pSeg'+(i<curSec?' done':i===curSec?' active':'');}}
+
+// ─── DATA ───
+var TRANSPORTS=[
+  {name:'le bus',en:'the bus',emoji:'🚌',type:'pub',tags:['tagPub','tagCheap'],desc:'Public · Cheap · Sometimes slow in traffic',spk:'le bus'},
+  {name:'le métro',en:'the metro / subway',emoji:'🚇',type:'pub',tags:['tagPub','tagFast'],desc:'Public · Fast · Direct · Can be crowded',spk:'le métro'},
+  {name:'le tram',en:'the tram',emoji:'🚊',type:'pub',tags:['tagPub','tagCheap'],desc:'Public · Comfortable · Eco-friendly',spk:'le tram'},
+  {name:'le taxi',en:'the taxi',emoji:'🚕',type:'priv',tags:['tagPriv'],desc:'Private · Convenient · More expensive',spk:'le taxi'},
+  {name:'la voiture',en:'the car',emoji:'🚗',type:'priv',tags:['tagPriv'],desc:'Private · Flexible · Can be slow in traffic',spk:'la voiture'},
+  {name:'le vélo',en:'the bicycle',emoji:'🚲',type:'leis',tags:['tagLeis','tagCheap'],desc:'Leisure · Eco-friendly · Good for health',spk:'le vélo'},
+  {name:'à pied',en:'on foot / walking',emoji:'🚶',type:'free',tags:['tagFree','tagLeis'],desc:'Free · Healthy · Slower than vehicles',spk:'à pied'},
+  {name:'la moto',en:'the motorbike',emoji:'🏍️',type:'priv',tags:['tagPriv','tagFast'],desc:'Private · Fast · Avoids traffic',spk:'la moto'},
+  {name:'le taxi-moto',en:'motorbike taxi',emoji:'🛵',type:'pub',tags:['tagPub','tagCheap'],desc:'Public · Cheap · Very common in West Africa',spk:'le taxi-moto'},
+  {name:'le train',en:'the train',emoji:'🚆',type:'pub',tags:['tagPub','tagFast'],desc:'Public · Fast for long distances · We saw this at la gare!',spk:'le train'},
+  {name:"l'avion",en:'the plane',emoji:'✈️',type:'priv',tags:['tagPriv'],desc:'Very fast · Expensive · For long journeys',spk:"l'avion"},
+  {name:'le covoiturage',en:'carpooling / rideshare',emoji:'🚗👥',type:'pub',tags:['tagPub','tagCheap'],desc:'Public · Economical · Eco-friendly · Modern',spk:'le covoiturage'}
+];
+var TRANS_SPK=TRANSPORTS.map(function(t){return t.spk;});
+
+var ADJECTIVES=[
+  {fr:'rapide',en:'fast / quick',opp:'↔ lent(e) = slow',spk:'rapide'},
+  {fr:'lent(e)',en:'slow',opp:'↔ rapide = fast',spk:'lent'},
+  {fr:'pratique',en:'practical / convenient',opp:'↔ compliqué = complicated',spk:'pratique'},
+  {fr:'cher',en:'expensive',opp:'↔ pas cher = cheap',spk:'cher'},
+  {fr:'gratuit(e)',en:'free (no cost)',opp:'↔ payant = paid',spk:'gratuit'},
+  {fr:'écologique',en:'eco-friendly',opp:'↔ polluant = polluting',spk:'écologique'},
+  {fr:'confortable',en:'comfortable',opp:'↔ inconfortable',spk:'confortable'},
+  {fr:'bondé(e)',en:'crowded / packed',opp:'↔ peu fréquenté',spk:'bondé'},
+  {fr:'direct(e)',en:'direct / non-stop',opp:'↔ avec correspondances',spk:'direct'},
+  {fr:'privé(e)',en:'private',opp:'↔ public = public',spk:'privé'},
+  {fr:'public',en:'public (for everyone)',opp:'↔ privé = private',spk:'public'},
+  {fr:'bon marché',en:'cheap / good value',opp:'↔ cher = expensive',spk:'bon marché'}
+];
+var ADJ_SPK=ADJECTIVES.map(function(a){return a.spk+'. '+a.en;});
+
+var FREQ_WORDS=[
+  {fr:'jamais',en:'never (0%)',icon:'❌',pct:0,bar:'var(--rd)',ex:'Je ne prends jamais le taxi.',exEn:'I never take a taxi.'},
+  {fr:'rarement',en:'rarely (20%)',icon:'😕',pct:20,bar:'#E07030',ex:'Je vais rarement à pied quand il pleut.',exEn:'I rarely walk when it rains.'},
+  {fr:'parfois',en:'sometimes (40%)',icon:'😐',pct:40,bar:'var(--yl)',ex:'Je prends parfois le métro.',exEn:'I sometimes take the metro.'},
+  {fr:"d'habitude",en:'usually (75%)',icon:'📅',pct:75,bar:'#3070C0',ex:"D'habitude, je prends le bus.",exEn:'Usually, I take the bus.'},
+  {fr:'souvent',en:'often (80%)',icon:'😊',pct:80,bar:'var(--tr)',ex:'Je vais souvent au marché à pied.',exEn:'I often go to the market on foot.'},
+  {fr:'toujours',en:'always (100%)',icon:'🔥',pct:100,bar:'var(--gn)',ex:'Je prends toujours le bus le lundi.',exEn:'I always take the bus on Mondays.'}
+];
+var FREQ_SPK=FREQ_WORDS.map(function(f){return f.fr+'. '+f.ex;});
+
+// Match game data — 40% from previous labs (Days 10-15)
+var MATCH_PAIRS=[
+  {fr:'rapide',en:'fast'},
+  {fr:'gratuit',en:'free (no cost)'},
+  {fr:'bondé',en:'crowded'},
+  {fr:'le marché',en:'the market'},       // Day 15
+  {fr:'la gare',en:'the train station'},   // Day 13
+  {fr:'frais',en:'fresh'},                 // Day 15
+  {fr:'parce que',en:'because'},           // Day 12
+  {fr:'souvent',en:'often'},
+  {fr:'pratique',en:'practical / convenient'},
+  {fr:'ouvert',en:'open'}                  // Day 15
+];
+
+var GRAM_DRILL=[
+  {s:"Je vais à l'école ___ vélo.",ans:"à",hint:"bicycle — personal power, no engine"},
+  {s:"Elle prend le bus. Elle va au marché ___ bus.",ans:"en",hint:"bus has an engine → en"},
+  {s:"Ils voyagent ___ avion pour aller à Paris.",ans:"en",hint:"plane has an engine → en"},
+  {s:"Je préfère aller ___ pied quand il fait beau.",ans:"à",hint:"walking — no engine → à"},
+  {s:"Nous rentrons ___ taxi le soir.",ans:"en",hint:"taxi has an engine → en"},
+  {s:"Il va travailler ___ moto.",ans:"en",hint:"motorbike has an engine → en"}
+];
+
+var DIALOGUES=[
+  {
+    q:{spk:'Interviewer',fr:"Comment tu vas au bureau d'habitude ?",en:"How do you usually go to work?"},
+    a:{spk:'Amina',fr:"D'habitude, je prends le bus parce que c'est moins cher que le taxi.",en:"Usually, I take the bus because it's cheaper than a taxi."}
+  },
+  {
+    q:{spk:'Interviewer',fr:"Tu préfères quel moyen de transport ?",en:"What means of transport do you prefer?"},
+    a:{spk:'Marc',fr:"Je préfère le vélo parce que c'est gratuit et c'est bon pour la santé.",en:"I prefer the bicycle because it's free and good for health."}
+  },
+  {
+    q:{spk:'Interviewer',fr:"Le métro ou le bus — lequel est plus rapide ?",en:"The metro or the bus — which is faster?"},
+    a:{spk:'Fatima',fr:"Le métro est plus rapide que le bus parce qu'il n'y a pas de trafic.",en:"The metro is faster than the bus because there's no traffic."}
+  },
+  {
+    q:{spk:'Interviewer',fr:"Est-ce que tu utilises des transports en commun ?",en:"Do you use public transport?"},
+    a:{spk:'Kwame',fr:"Oui, souvent. Je prends le taxi-moto parce que c'est pratique et pas cher dans ma ville.",en:"Yes, often. I take the motorbike taxi because it's practical and cheap in my city."}
+  },
+  {
+    q:{spk:'Interviewer',fr:"Quand est-ce que tu prends un taxi ?",en:"When do you take a taxi?"},
+    a:{spk:'Sophie',fr:"Je prends rarement un taxi — seulement quand je suis très fatiguée après le travail.",en:"I rarely take a taxi — only when I'm very tired after work."}
+  }
+];
+var DLG_SPK=DIALOGUES.map(function(d){return d.q.fr+'. '+d.a.fr;});
+
+// Vlog stories — 4 people, with vocabulary marked for tooltips
+// Format: HTML strings with .vf spans for tooltips (CSS hover, no onclick needed)
+var VLOGS=[
+  {
+    name:'Amina D.',city:'Lagos → Montréal 🇨🇦',emoji:'👩🏾',
+    spkTxt:"D'habitude, le lundi et le mardi, je prends le bus pour aller à l'université parce que c'est moins cher que le taxi. Le bus est parfois bondé le matin, mais c'est pratique. Le mercredi, je vais à vélo au marché parce que c'est gratuit et bon pour la santé. Le week-end, je rentre chez moi à pied parce que c'est gratuit et il n'y a pas de trafic. Je préfère le vélo à la voiture parce que c'est plus écologique.",
+    html:"<span class='link-word'>D'habitude</span>, le lundi et le mardi, je <span class='vf'>prends<span class='vfT'><span class='vfEn'>I take</span><span class='vfIpa'>[pʁɑ̃]</span></span></span> le bus pour aller à <span class='vf'>l'université<span class='vfT'><span class='vfEn'>university / college</span><span class='vfIpa'>[lynivɛʁsite]</span></span></span> <span class='link-word'>parce que</span> c'est <span class='vf'>moins cher<span class='vfT'><span class='vfEn'>cheaper / less expensive</span></span></span> que le taxi. Le bus est <span class='link-word'>parfois</span> <span class='vf'>bondé<span class='vfT'><span class='vfEn'>crowded / packed</span></span></span> le matin, <span class='link-word'>mais</span> c'est <span class='vf'>pratique<span class='vfT'><span class='vfEn'>practical / convenient</span></span></span>. Le mercredi, je vais à vélo au <span class='vf'>marché<span class='vfT'><span class='vfEn'>the market (we learned this in Day 15!)</span></span></span> <span class='link-word'>parce que</span> c'est <span class='vf'>gratuit<span class='vfT'><span class='vfEn'>free / no cost</span></span></span> et bon pour la <span class='vf'>santé<span class='vfT'><span class='vfEn'>health</span></span></span>. Le week-end, je rentre <span class='vf'>chez moi<span class='vfT'><span class='vfEn'>home / to my place</span></span></span> à pied <span class='link-word'>parce que</span> c'est gratuit et il n'y a pas de <span class='vf'>trafic<span class='vfT'><span class='vfEn'>traffic</span></span></span>. Je préfère le vélo à la voiture <span class='link-word'>parce que</span> c'est plus <span class='vf'>écologique<span class='vfT'><span class='vfEn'>eco-friendly / good for the environment</span></span></span>.",
+    compQ:"Why does Amina prefer the bicycle to the car?",compA:"parce que c'est plus écologique"
+  },
+  {
+    name:'Marc L.',city:'Montréal 🇨🇦',emoji:'👨',
+    spkTxt:"Je travaille au bureau du lundi au vendredi. D'abord, je prends le métro jusqu'à la gare centrale, ensuite je marche dix minutes. Le métro est plus rapide que le bus, mais il est souvent bondé aux heures de pointe. Parfois, je fais du covoiturage avec un collègue parce que c'est plus écologique. Le samedi, je vais au cinéma en taxi avec ma famille.",
+    html:"Je <span class='vf'>travaille<span class='vfT'><span class='vfEn'>I work</span><span class='vfIpa'>[tʁavaj]</span></span></span> au bureau du lundi au vendredi. <span class='link-word'>D'abord</span>, je prends le <span class='vf'>métro<span class='vfT'><span class='vfEn'>the metro / subway</span></span></span> jusqu'à la <span class='vf'>gare<span class='vfT'><span class='vfEn'>train station (we saw this in Day 13!)</span></span></span> centrale, <span class='link-word'>ensuite</span> je <span class='vf'>marche<span class='vfT'><span class='vfEn'>I walk</span></span></span> dix minutes. Le métro est <span class='vf'>plus rapide que<span class='vfT'><span class='vfEn'>faster than (comparison!)</span></span></span> le bus, <span class='link-word'>mais</span> il est <span class='link-word'>souvent</span> <span class='vf'>bondé<span class='vfT'><span class='vfEn'>crowded / packed</span></span></span> aux <span class='vf'>heures de pointe<span class='vfT'><span class='vfEn'>rush hours / peak hours</span></span></span>. <span class='link-word'>Parfois</span>, je fais du <span class='vf'>covoiturage<span class='vfT'><span class='vfEn'>carpooling / rideshare</span></span></span> avec un <span class='vf'>collègue<span class='vfT'><span class='vfEn'>colleague / workmate</span></span></span> <span class='link-word'>parce que</span> c'est plus écologique. Le samedi, je vais au <span class='vf'>cinéma<span class='vfT'><span class='vfEn'>cinema / movie theatre</span></span></span> en taxi avec ma famille.",
+    compQ:"How does Marc get from the metro to the office?",compA:"il marche dix minutes"
+  },
+  {
+    name:'Fatima B.',city:'Paris 🇫🇷',emoji:'👩',
+    spkTxt:"Je vis à Paris et je n'ai pas de voiture. Tous les matins, je prends le vélo en libre-service parce que c'est rapide et gratuit. Mais quand il pleut, je prends le tram ou le métro. Le tram est aussi confortable que le bus, et il est moins polluant. Le vendredi soir, je vais au théâtre en métro. Le week-end, je préfère aller à pied parce que Paris est belle et j'aime voir les gens.",
+    html:"Je <span class='vf'>vis<span class='vfT'><span class='vfEn'>I live</span></span></span> à Paris et je n'ai pas de <span class='vf'>voiture<span class='vfT'><span class='vfEn'>car</span></span></span>. Tous les matins, je prends le <span class='vf'>vélo en libre-service<span class='vfT'><span class='vfEn'>bike-share / public bicycle</span></span></span> <span class='link-word'>parce que</span> c'est rapide et gratuit. <span class='link-word'>Mais</span> quand il <span class='vf'>pleut<span class='vfT'><span class='vfEn'>it rains</span></span></span>, je prends le <span class='vf'>tram<span class='vfT'><span class='vfEn'>tram / streetcar</span></span></span> ou le métro. Le tram est <span class='vf'>aussi confortable que<span class='vfT'><span class='vfEn'>as comfortable as (same level comparison!)</span></span></span> le bus, <span class='link-word'>et</span> il est <span class='vf'>moins polluant<span class='vfT'><span class='vfEn'>less polluting / cleaner for the environment</span></span></span>. Le vendredi soir, je vais au <span class='vf'>théâtre<span class='vfT'><span class='vfEn'>theatre (a new place from today!)</span></span></span> en métro. Le week-end, je préfère aller à pied <span class='link-word'>parce que</span> Paris est <span class='vf'>belle<span class='vfT'><span class='vfEn'>beautiful (feminine form of beau)</span></span></span> et j'aime voir les <span class='vf'>gens<span class='vfT'><span class='vfEn'>people</span></span></span>.",
+    compQ:"What does Fatima take when it rains?",compA:"le tram ou le métro"
+  },
+  {
+    name:'Kwame A.',city:'Accra → French learner 🇬🇭',emoji:'👨🏾',
+    spkTxt:"Dans ma ville, les transports sont différents ! Il y a les taxi-motos qui sont très pratiques et pas chers. D'habitude, je vais à l'école en taxi-moto le matin parce que c'est plus rapide que le bus et moins cher que le taxi. Après l'école, je rentre à pied parce que c'est gratuit et ce n'est pas loin. Le samedi, je vais au marché avec ma mère. Nous prenons le bus parce que le marché est loin de chez nous. Je préfère les transports en commun parce que c'est mieux pour l'environnement.",
+    html:"Dans ma ville, les <span class='vf'>transports<span class='vfT'><span class='vfEn'>transport / means of getting around</span></span></span> sont différents ! Il y a les <span class='vf'>taxi-motos<span class='vfT'><span class='vfEn'>motorbike taxis — very common in West Africa!</span></span></span> qui sont très pratiques et pas <span class='vf'>chers<span class='vfT'><span class='vfEn'>expensive (plural form of cher)</span></span></span>. <span class='link-word'>D'habitude</span>, je vais à <span class='vf'>l'école<span class='vfT'><span class='vfEn'>school</span></span></span> en taxi-moto le matin <span class='link-word'>parce que</span> c'est <span class='vf'>plus rapide que<span class='vfT'><span class='vfEn'>faster than — comparison with plus</span></span></span> le bus et moins cher que le taxi. <span class='link-word'>Après</span> l'école, je rentre à pied <span class='link-word'>parce que</span> c'est gratuit et ce n'est pas <span class='vf'>loin<span class='vfT'><span class='vfEn'>far (from loin de = far from)</span></span></span>. Le samedi, je vais au <span class='vf'>marché<span class='vfT'><span class='vfEn'>market (from Day 15!)</span></span></span> avec ma <span class='vf'>mère<span class='vfT'><span class='vfEn'>mother / mum</span></span></span>. Nous prenons le bus <span class='link-word'>parce que</span> le marché est <span class='vf'>loin de chez nous<span class='vfT'><span class='vfEn'>far from our home (preposition loin de from Day 15!)</span></span></span>. Je préfère les <span class='vf'>transports en commun<span class='vfT'><span class='vfEn'>public transport (key TEF vocabulary!)</span></span></span> <span class='link-word'>parce que</span> c'est mieux pour <span class='vf'>l'environnement<span class='vfT'><span class='vfEn'>the environment</span></span></span>.",
+    compQ:"Why does Kwame walk home from school?",compA:"parce que c'est gratuit"
+  }
+];
+
+var VLOG_SPK=VLOGS.map(function(v){return v.spkTxt;});
+
+var SIDE_REF_STORY=VLOGS[0].spkTxt;
+
+var WEEK_STARTERS=["D'habitude, je...","Le lundi, je prends...","Parfois, je vais...","Je préfère... parce que c'est...","...est plus... que...","Mais quand il pleut, je...","Le week-end, je...","Je ne prends jamais..."];
+
+var SIGNS=[
+  {board:'DIRECTION GARE CENTRALE →',style:'',meaning:'Direction to the main train station',q:'This sign tells you:',opts:['The station price','The direction to the train station','That the station is closed','A bus route'],ans:1},
+  {board:'GRATUIT POUR LES MOINS DE 5 ANS',style:'gn',meaning:'Free for children under 5 years old',q:'Who travels for free?',opts:['Everyone','Students','Children under 5','People over 65'],ans:2},
+  {board:'VOIE RÉSERVÉE AUX BUS ET TAXIS',style:'yl',meaning:'Lane reserved for buses and taxis only',q:'This road lane is for:',opts:['All vehicles','Bicycles only','Buses and taxis only','Pedestrians'],ans:2},
+  {board:'PROCHAIN BUS : 12 MINUTES',style:'',meaning:'Next bus: 12 minutes',q:'How long until the next bus?',opts:['2 minutes','12 minutes','20 minutes','1 hour'],ans:1},
+  {board:'COMPOSEZ VOTRE TICKET AVANT DE MONTER',style:'rd',meaning:'Validate your ticket before boarding',q:'What must you do before boarding?',opts:['Buy a new ticket','Show your passport','Validate your ticket','Wait for the driver'],ans:2},
+  {board:'STATION FERMÉE LE DIMANCHE',style:'rd',meaning:'Station closed on Sundays',q:'When is this station closed?',opts:['Weekdays','Saturdays','Sundays','Every morning'],ans:2}
+];
+var SIGN_SPK=SIGNS.map(function(s){return s.board;});
+
+var FINAL_QS=[
+  {q:"How do you say 'I go to school by bus'?",opts:["Je vais à l'école à bus","Je vais à l'école en bus","Je prends bus","Je suis en bus"],ans:1},
+  {q:"How do you say 'I go by bicycle'?",opts:["Je vais en vélo","Je vais à vélo","Je prends vélo","J'ai vélo"],ans:1},
+  {q:"'Les transports en commun' means:",opts:["private transport","fast transport","public transport","expensive transport"],ans:2},
+  {q:"'Bondé' means:",opts:["fast","crowded / packed","cheap","eco-friendly"],ans:1},
+  {q:"Which word means 'usually'?",opts:["parfois","jamais","d'habitude","rarement"],ans:2},
+  {q:"Fill: Le bus est ___ rapide ___ le métro. (less fast than)",opts:["plus...que","aussi...que","moins...que","très...que"],ans:2},
+  {q:"'Gratuit' means:",opts:["expensive","crowded","fast","free (no cost)"],ans:3},
+  {q:"How do you say 'She goes to the cinema by taxi'?",opts:["Elle va au cinéma à taxi","Elle va au cinéma en taxi","Elle taxi cinéma","Elle prends taxi"],ans:1},
+  {q:"Which is correct: 'I always take the metro'?",opts:["Je toujours prends le métro","Je prends toujours le métro","Je le métro toujours","Toujours je métro"],ans:1},
+  {q:"'Écologique' means:",opts:["fast","expensive","eco-friendly","crowded"],ans:2}
+];
+
+var CAN_DO=[
+  "Nommer 12 moyens de transport en français",
+  "Utiliser 'en bus', 'en taxi', 'à vélo', 'à pied' correctement",
+  "Dire où tu vas et comment : Je vais à l'école en bus",
+  "Comparer : Le bus est plus rapide que la marche",
+  "Utiliser les mots de fréquence : toujours, souvent, parfois, jamais",
+  "Lire des panneaux de transport en français",
+  "Lire des histoires en français avec les mots nouveaux",
+  "Écrire ton propre vlog de transport en 3 minutes !"
+];
+
+// ─── RENDER FUNCTIONS ───
+function renderTransCards(){
+  var TAGS={'tagPub':'🚌 Public','tagPriv':'🔑 Private','tagFast':'⚡ Fast','tagCheap':'💚 Cheap','tagFree':'🆓 Free','tagLeis':'🌿 Leisure'};
+  document.getElementById('transCards').innerHTML=TRANSPORTS.map(function(t,i){
+    return '<div class="tCard '+t.type+'">'
+      +'<span class="tEmoji">'+t.emoji+'</span>'
+      +'<div class="tFr">'+t.name+'</div>'
+      +'<div class="tEn">'+t.en+'</div>'
+      +'<div class="tDesc">'+t.desc+'</div>'
+      +'<div class="tTags">'+t.tags.map(function(tag){return '<span class="tTag '+tag+'">'+TAGS[tag]+'</span>';}).join('')+'</div>'
+      +'<div class="audRow" style="gap:4px;margin-top:7px">'
+      +'<button class="bTr_ tcSpk" data-idx="'+i+'" style="min-height:27px;font-size:.67rem;padding:0 9px">🔊</button>'
+      +'<button class="bRec tcRec" data-idx="'+i+'" id="tcr'+i+'" style="min-height:27px;font-size:.67rem;padding:0 8px">🎤</button>'
+      +'<button class="bPb" id="tcp'+i+'" style="min-height:27px;font-size:.67rem;padding:0 8px">▶️</button>'
+      +'</div></div>';
+  }).join('');
+  document.getElementById('transCards').addEventListener('click',function(ev){
+    var btn=ev.target.closest('button');if(!btn)return;
+    var idx=btn.dataset.idx;
+    if(btn.classList.contains('tcSpk'))spk(TRANS_SPK[idx],btn);
+    if(btn.classList.contains('tcRec')){
+      var pbId='tcp'+idx;
+      if(btn.classList.contains('on')){if(mRecs['tc'+idx]&&mRecs['tc'+idx].state==='recording')mRecs['tc'+idx].stop();return;}
+      navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){var ch=[];var mr=new MediaRecorder(st);mRecs['tc'+idx]=mr;mr.ondataavailable=function(e){if(e.data.size>0)ch.push(e.data);};mr.onstop=function(){blobs[pbId]=new Blob(ch,{type:'audio/webm'});st.getTracks().forEach(function(t){t.stop();});btn.textContent='🎤';btn.classList.remove('on');var pb=document.getElementById(pbId);if(pb)pb.classList.add('show');spkN++;};mr.start();btn.textContent='⏹';btn.classList.add('on');}).catch(function(){});
+    }
+    if(btn.id&&btn.id.startsWith('tcp'))pBlob(btn.id);
+  });
+}
+
+function renderAdjCards(){
+  document.getElementById('adjCards').innerHTML=ADJECTIVES.map(function(a,i){
+    return '<div class="adjCard">'
+      +'<span class="adjFr">'+a.fr+'</span>'
+      +'<span class="adjEn">'+a.en+'</span>'
+      +'<span class="adjOpp">'+a.opp+'</span>'
+      +'<div class="audRow" style="justify-content:center;gap:3px;margin-top:5px">'
+      +'<button class="bTr_ adjSpk" data-idx="'+i+'" style="min-height:26px;padding:0 7px;font-size:.6rem">🔊</button>'
+      +'</div></div>';
+  }).join('');
+  document.getElementById('adjCards').addEventListener('click',function(ev){
+    var btn=ev.target.closest('.adjSpk');if(!btn)return;
+    spk(ADJ_SPK[btn.dataset.idx],btn);
+  });
+}
+
+function renderFreqCards(){
+  document.getElementById('freqCards').innerHTML=FREQ_WORDS.map(function(f,i){
+    return '<div class="freqCard">'
+      +'<div class="freqIcon">'+f.icon+'</div>'
+      +'<div style="flex:0 0 90px"><div class="freqFr fr">'+f.fr+'</div><div class="freqEn">'+f.en+'</div></div>'
+      +'<div class="freqBarWrap">'
+      +'<div style="height:8px;background:var(--bg4);border-radius:99px;overflow:hidden"><div class="freqBar" style="width:'+f.pct+'%;background:'+f.bar+'"></div></div>'
+      +'<div class="freqPct">'+f.pct+'%</div>'
+      +'<div class="freqEx fr">'+f.ex+'<br><span style="color:var(--mut)">'+f.exEn+'</span></div>'
+      +'</div>'
+      +'<button class="bTr_ fqSpk" data-idx="'+i+'" style="min-height:30px;padding:0 8px;font-size:.67rem">🔊</button>'
+      +'</div>';
+  }).join('');
+  document.getElementById('freqCards').addEventListener('click',function(ev){
+    var btn=ev.target.closest('.fqSpk');if(!btn)return;
+    spk(FREQ_SPK[btn.dataset.idx],btn);
+  });
+}
+
+// ─── MATCHING GAME ───
+function renderMatchGame(){
+  var shuffledDefs=[...MATCH_PAIRS].sort(function(){return Math.random()-.5;});
+  var shuffledWords=[...MATCH_PAIRS].sort(function(){return Math.random()-.5;});
+  document.getElementById('matchWords').innerHTML=shuffledWords.map(function(p,i){
+    return '<div class="matchItem" draggable="true" data-word="'+p.fr+'" id="mw'+i+'">'+p.fr+'</div>';
+  }).join('');
+  document.getElementById('matchDefs').innerHTML=shuffledDefs.map(function(p,i){
+    return '<div class="dropZone" data-target="'+p.fr+'" id="md'+i+'">'+p.en+'</div>';
+  }).join('');
+  setupDragDrop();
+  setupClickMatch();
+}
+
+function setupDragDrop(){
+  var words=document.querySelectorAll('.matchItem');
+  var zones=document.querySelectorAll('.dropZone');
+  words.forEach(function(w){
+    w.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',w.dataset.word);w.classList.add('dragging');});
+    w.addEventListener('dragend',function(){w.classList.remove('dragging');});
+  });
+  zones.forEach(function(z){
+    z.addEventListener('dragover',function(e){e.preventDefault();z.classList.add('over');});
+    z.addEventListener('dragleave',function(){z.classList.remove('over');});
+    z.addEventListener('drop',function(e){
+      e.preventDefault();z.classList.remove('over');
+      if(z.classList.contains('matched'))return;
+      var word=e.dataTransfer.getData('text/plain');
+      checkMatch(word,z);
+    });
+  });
+}
+
+function setupClickMatch(){
+  document.getElementById('matchWords').addEventListener('click',function(ev){
+    var item=ev.target.closest('.matchItem');if(!item||item.classList.contains('matched-done'))return;
+    document.querySelectorAll('.matchItem').forEach(function(i){i.classList.remove('selected');});
+    item.classList.add('selected');
+    selectedWord=item.dataset.word;
+  });
+  document.getElementById('matchDefs').addEventListener('click',function(ev){
+    var zone=ev.target.closest('.dropZone');if(!zone||zone.classList.contains('matched'))return;
+    if(!selectedWord)return;
+    checkMatch(selectedWord,zone);
+    selectedWord=null;
+    document.querySelectorAll('.matchItem').forEach(function(i){i.classList.remove('selected');});
+  });
+}
+
+function checkMatch(word,zone){
+  if(!matchRunning)return;
+  var correct=zone.dataset.target===word;
+  if(correct){
+    zone.classList.add('matched');
+    zone.innerHTML='✅ '+zone.innerHTML;
+    var wordEl=document.querySelector('.matchItem[data-word="'+word+'"]');
+    if(wordEl){wordEl.classList.add('matched-done');wordEl.style.opacity='.4';wordEl.draggable=false;}
+    matchedCount++;
+    document.getElementById('matchProgress').textContent=matchedCount+' / '+MATCH_PAIRS.length+' matched';
+    onCorrect();
+    if(matchedCount===MATCH_PAIRS.length){
+      clearInterval(matchTimer);matchRunning=false;
+      var timeLeft=matchSecs;var pct=Math.round((matchedCount/MATCH_PAIRS.length)*100);
+      var sc=document.getElementById('matchScore');sc.className='matchScore show';
+      sc.innerHTML='🎉 All matched! Score: '+pct+'% · Time remaining: '+(Math.floor(timeLeft/60)+':'+(timeLeft%60<10?'0':'')+timeLeft%60);
+      playFanfare();confetti();
+    }
+  } else {
+    zone.classList.add('wrong');setTimeout(function(){zone.classList.remove('wrong');},600);
+  }
+}
+
+function startMatchGame(){
+  if(matchRunning)return;
+  matchRunning=true;matchSecs=180;matchedCount=0;selectedWord=null;
+  document.getElementById('matchScore').className='matchScore';
+  renderMatchGame();
+  matchTimer=setInterval(function(){
+    matchSecs--;var m=Math.floor(matchSecs/60),s=matchSecs%60;
+    var el=document.getElementById('matchTimer');
+    el.textContent=m+':'+(s<10?'0':'')+s;
+    if(matchSecs<=30)el.classList.add('urgent');
+    if(matchSecs<=0){clearInterval(matchTimer);matchRunning=false;el.textContent='⏰ Time!';el.classList.add('urgent');}
+  },1000);
+  document.getElementById('matchTimer').classList.remove('urgent');
+}
+
+function resetMatch(){clearInterval(matchTimer);matchRunning=false;selectedWord=null;matchedCount=0;matchSecs=180;document.getElementById('matchTimer').textContent='3:00';document.getElementById('matchTimer').classList.remove('urgent');document.getElementById('matchProgress').textContent='0 / '+MATCH_PAIRS.length+' matched';document.getElementById('matchScore').className='matchScore';renderMatchGame();}
+
+function renderGramDrill(){
+  document.getElementById('gramDrill').innerHTML=GRAM_DRILL.map(function(d,i){
+    return '<div style="background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:var(--rsm);padding:11px;margin-bottom:9px">'
+      +'<div style="font-size:.59rem;font-weight:700;color:var(--pu);text-transform:uppercase;margin-bottom:4px;font-family:Space Grotesk,sans-serif">Hint: '+d.hint+'</div>'
+      +'<div style="font-size:.92rem;color:var(--txt);font-family:EB Garamond,serif;line-height:2">'
+      +d.s.replace('___','<input class="flInp" id="gd'+i+'" placeholder="en/à" autocomplete="off" style="min-width:70px;text-align:center">')
+      +'</div></div>';
+  }).join('');
+}
+
+function renderDialogues(){
+  document.getElementById('dialogSection').innerHTML=DIALOGUES.map(function(d,i){
+    return '<div class="dlgPair"><div class="dlgBubble q"><div class="dlgRole q">'+d.q.spk+' — Question</div><div class="dlgFr fr">'+d.q.fr+'</div><div class="dlgEn">'+d.q.en+'</div><button class="dlgAud dqAud" data-idx="'+i+'">🔊 Hear question</button></div><div class="dlgBubble a"><div class="dlgRole a">'+d.a.spk+' — Réponse</div><div class="dlgFr fr">'+d.a.fr+'</div><div class="dlgEn">'+d.a.en+'</div><button class="dlgAud daAud" data-idx="'+i+'">🔊 Hear answer</button></div></div>';
+  }).join('');
+  document.getElementById('dialogSection').addEventListener('click',function(ev){
+    var btn=ev.target.closest('.dqAud,.daAud');if(!btn)return;
+    var idx=btn.dataset.idx;
+    if(btn.classList.contains('dqAud'))spk(DLG_SPK[idx].split('. ')[0],btn);
+    else spk(DIALOGUES[idx].a.fr,btn);
+  });
+}
+
+function renderVlogPersons(){
+  document.getElementById('vlogPersonGrid').innerHTML=VLOGS.map(function(v,i){
+    return '<button class="vlogPersonBtn'+(i===0?' active':'')+'" data-idx="'+i+'">'
+      +'<span class="vlogAvatar">'+v.emoji+'</span>'
+      +'<div class="vlogName">'+v.name+'</div>'
+      +'<div class="vlogCity">'+v.city+'</div>'
+      +'</button>';
+  }).join('');
+  document.getElementById('vlogPersonGrid').addEventListener('click',function(ev){
+    var btn=ev.target.closest('.vlogPersonBtn');if(!btn)return;
+    var idx=btn.dataset.idx;
+    document.querySelectorAll('.vlogPersonBtn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    document.querySelectorAll('.vlogStoryBox').forEach(function(s){s.classList.remove('show');});
+    var box=document.getElementById('vlogBox'+idx);if(box)box.classList.add('show');
+  });
+}
+
+function renderVlogStories(){
+  document.getElementById('vlogStories').innerHTML=VLOGS.map(function(v,i){
+    return '<div class="vlogStoryBox'+(i===0?' show':'')+'" id="vlogBox'+i+'">'
+      +'<div class="vlogStoryHeader">'
+      +'<div style="font-size:2rem">'+v.emoji+'</div>'
+      +'<div><div style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:.9rem;color:var(--txt)">'+v.name+'</div><div style="font-size:.7rem;color:var(--mut)">'+v.city+'</div></div>'
+      +'</div>'
+      +'<div class="vlogStoryTxt">'+v.html+'</div>'
+      +'<div class="vlogCompQ"><strong>💬 Quick check:</strong> '+v.compQ+'<br><span style="font-size:.72rem;color:var(--mut);cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'block\'?\'none\':\'block\'">👁 Reveal answer</span><div style="display:none;color:var(--gn2);font-weight:700;font-family:EB Garamond,serif;margin-top:4px">'+v.compA+'</div></div>'
+      +'<div class="audRow" style="margin-top:11px">'
+      +'<button class="bTr_ vlogSpk" data-idx="'+i+'" style="min-height:34px;font-size:.75rem">🔊 Listen to story</button>'
+      +'<button class="bOut vlogSlow" data-idx="'+i+'" style="min-height:34px;font-size:.75rem">🐢 Slow</button>'
+      +'<button class="bRec vlogRec" data-idx="'+i+'" id="vlgr'+i+'" style="min-height:34px;font-size:.75rem">🎤 Read aloud</button>'
+      +'<button class="bPb" id="vlgp'+i+'" style="min-height:34px;font-size:.75rem">▶️</button>'
+      +'</div></div>';
+  }).join('');
+  document.getElementById('vlogStories').addEventListener('click',function(ev){
+    var btn=ev.target.closest('button');if(!btn)return;
+    var idx=btn.dataset.idx;
+    if(btn.classList.contains('vlogSpk'))spk(VLOG_SPK[idx],btn);
+    if(btn.classList.contains('vlogSlow'))spk(VLOG_SPK[idx],btn,.6);
+    if(btn.classList.contains('vlogRec')){
+      var pid='vlgp'+idx,rid='vlgr'+idx;
+      if(btn.classList.contains('on')){if(mRecs[rid]&&mRecs[rid].state==='recording')mRecs[rid].stop();return;}
+      navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){var ch=[];var mr=new MediaRecorder(st);mRecs[rid]=mr;mr.ondataavailable=function(e){if(e.data.size>0)ch.push(e.data);};mr.onstop=function(){blobs[pid]=new Blob(ch,{type:'audio/webm'});st.getTracks().forEach(function(t){t.stop();});btn.textContent='🎤 Read aloud';btn.classList.remove('on');var pb=document.getElementById(pid);if(pb)pb.classList.add('show');spkN++;};mr.start();btn.textContent='⏹ Stop';btn.classList.add('on');}).catch(function(){});
+    }
+    if(btn.id&&btn.id.startsWith('vlgp'))pBlob(btn.id);
+  });
+}
+
+function startTimedChallenge(){
+  if(timedRunning)return;timedRunning=true;
+  document.getElementById('timedTA').disabled=false;document.getElementById('timedTA').focus();
+  document.getElementById('startTimedBtn').style.display='none';
+  timedSecs=180;
+  timedTimer=setInterval(function(){
+    timedSecs--;var m=Math.floor(timedSecs/60),s=timedSecs%60;
+    var el=document.getElementById('timedDisp');
+    el.textContent=m+':'+(s<10?'0':'')+s;
+    if(timedSecs<=30)el.classList.add('urgent');
+    if(timedSecs<=0){
+      clearInterval(timedTimer);timedRunning=false;
+      document.getElementById('timedTA').disabled=true;
+      document.getElementById('checkTimedBtn').style.display='flex';
+      document.getElementById('videoCard').style.display='block';
+      showCoach("Time's up! Great effort — press Check to get correction.",5000);
+    }
+  },1000);
+}
+
+async function checkTimed(){
+  var txt=document.getElementById('timedTA').value.trim();
+  var wc=txt.split(/\s+/).filter(function(w){return w.length>0;}).length;
+  if(wc<15){showCoach('Write at least a few sentences first!',4000);return;}
+  var c=document.getElementById('timedCoach');var ct=document.getElementById('timedCoachTxt');
+  c.classList.add('show');ct.innerHTML='<div class="cfbLoad">👩🏾‍🏫 Reading your transport story...</div>';
+  document.getElementById('videoCard').style.display='block';
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:AM,max_tokens:420,messages:[{role:'user',content:'Coach Linda full correction for A0-A1 French student timed transport writing ('+wc+' words, 3 minutes): "'+txt+'". Lesson covered: 12 transports, en vs à before transport, adjectives (rapide/lent/cher/gratuit/bondé/pratique/écologique), comparatives (plus X que/moins X que), frequency words (d\'habitude/souvent/parfois/jamais/toujours), days of week, linking words (mais/parce que/et/donc). Check ALL of these. Provide: (1) 2-3 things done well — be specific about vocabulary or structures used correctly (2) max 3 errors with wrong phrase quoted, correct version shown, grammar rule explained simply (3) one encouragement about their progress. Warm Socratic tone. Max 7 sentences. English.'}]})});
+    var d=await r.json();ct.innerHTML='<p>'+(d.content&&d.content[0]?d.content[0].text:'Great effort!')+'</p>';playChime();
+  }catch(e){ct.innerHTML='<p>Check: Did you use en bus or à vélo correctly? Did you include a comparison (plus X que)? Any missing accents?</p>';}
+}
+
+function renderSignCards(){
+  document.getElementById('signCards').innerHTML=SIGNS.map(function(s,i){
+    return '<div style="background:var(--bg2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:14px;margin-bottom:11px;box-shadow:var(--sh2)">'
+      +'<div class="signBoard '+(s.style||'')+'">'+s.board+'</div>'
+      +'<div style="font-size:.69rem;color:var(--mut);font-style:italic;margin-bottom:5px;cursor:pointer;font-weight:700" onclick="var e=this.nextElementSibling;e.style.display=e.style.display===\'block\'?\'none\':\'block\';this.textContent=e.style.display===\'block\'?\'🇫🇷 Hide meaning\':\'🇬🇧 What does this mean?\'">🇬🇧 What does this mean?</div>'
+      +'<div style="display:none;font-size:.82rem;color:var(--gn2);font-weight:700;background:var(--gnb);padding:7px 11px;border-radius:var(--rsm);margin-bottom:6px">'+s.meaning+'</div>'
+      +'<button class="bTr_ signSpk" data-idx="'+i+'" style="min-height:28px;font-size:.69rem;padding:0 9px">🔊 Hear sign</button></div>';
+  }).join('');
+  document.getElementById('signCards').addEventListener('click',function(ev){var btn=ev.target.closest('.signSpk');if(!btn)return;spk(SIGN_SPK[btn.dataset.idx],btn,.78);});
+}
+
+function renderSignQuiz(){
+  var html='';
+  SIGNS.forEach(function(s,i){
+    html+='<div class="mcqW"><div class="mcqQ">'+s.q+'</div>'
+      +s.opts.map(function(o,j){return '<div class="mcqO sqOpt" data-qi="'+i+'" data-oi="'+j+'" data-ans="'+s.ans+'">'+o+'</div>';}).join('')
+      +'<div class="mcqFb" id="sqfb'+i+'"></div></div>';
+  });
+  document.getElementById('signQuiz').innerHTML=html;
+  document.getElementById('signQuiz').addEventListener('click',function(ev){
+    var el=ev.target.closest('.sqOpt');if(!el)return;
+    var qi=el.dataset.qi,oi=parseInt(el.dataset.oi),ans=parseInt(el.dataset.ans);
+    if(sqDone[qi]!==undefined)return;sqDone[qi]=oi;var ok=oi===ans;
+    document.querySelectorAll('.sqOpt[data-qi="'+qi+'"]').forEach(function(e){e.classList.add('dis');if(parseInt(e.dataset.oi)===ans)e.classList.add('co');else if(parseInt(e.dataset.oi)===oi&&!ok)e.classList.add('wo');});
+    var fb=document.getElementById('sqfb'+qi);if(fb){fb.className='mcqFb show';fb.style.cssText=ok?'background:var(--gnb);color:var(--gn2)':'background:var(--rdb);color:var(--rd)';fb.textContent=ok?'Correct! '+SIGNS[qi].meaning:'Sign meaning: '+SIGNS[qi].meaning;}
+    if(ok)onCorrect();
+  });
+}
+
+function renderFinalQuiz(){
+  document.getElementById('finalQuiz').innerHTML=FINAL_QS.map(function(q,i){
+    return '<div class="mcqW"><div style="font-size:.59rem;font-weight:700;color:var(--tr2);text-transform:uppercase;margin-bottom:6px;font-family:Space Grotesk,sans-serif">Q'+(i+1)+'</div>'
+      +'<div class="mcqQ">'+q.q+'</div>'
+      +q.opts.map(function(o,j){return '<div class="mcqO fqOpt" data-qi="'+i+'" data-oi="'+j+'" data-ans="'+q.ans+'">'+o+'</div>';}).join('')
+      +'<div class="mcqFb" id="fqfb'+i+'"></div></div>';
+  }).join('');
+  document.getElementById('finalQuiz').addEventListener('click',function(ev){
+    var el=ev.target.closest('.fqOpt');if(!el)return;
+    var qi=el.dataset.qi,oi=parseInt(el.dataset.oi),ans=parseInt(el.dataset.ans);
+    if(quizDone[qi]!==undefined)return;quizDone[qi]=oi;var ok=oi===ans;
+    document.querySelectorAll('.fqOpt[data-qi="'+qi+'"]').forEach(function(e){e.classList.add('dis');if(parseInt(e.dataset.oi)===ans)e.classList.add('co');else if(parseInt(e.dataset.oi)===oi&&!ok)e.classList.add('wo');});
+    var fb=document.getElementById('fqfb'+qi);if(fb){fb.className='mcqFb show';fb.style.cssText=ok?'background:var(--gnb);color:var(--gn2)':'background:var(--rdb);color:var(--rd)';fb.textContent=ok?'Correct!':'Remember: en = engine, à = personal power. Frequency words go AFTER the verb!';}
+    if(ok)onCorrect();
+    if(Object.keys(quizDone).length===FINAL_QS.length){document.getElementById('reflWrap').style.display='block';playSectionDing();}
+  });
+}
+
+function renderRefl(){
+  var qs=[{id:'r1',q:'Which vlog story was closest to your own transport habits?'},{id:'r2',q:'Write one comparison sentence about transport in your city.'},{id:'r3',q:'What transport French will you use in real life this week?'}];
+  document.getElementById('reflQs').innerHTML=qs.map(function(q){return '<div style="background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:12px;margin-bottom:10px"><div style="font-size:.82rem;font-weight:700;color:var(--txt);margin-bottom:6px">'+q.q+'</div><textarea class="writeTA" id="'+q.id+'" rows="2" style="min-height:50px;font-size:.87rem"></textarea></div>';}).join('');}
+
+function renderStarters(){
+  document.getElementById('sideStarters').innerHTML=WEEK_STARTERS.map(function(s){return '<div class="starterC sideStartEl">'+s+'</div>';}).join('');
+  document.getElementById('sideStarters').addEventListener('click',function(ev){var el=ev.target.closest('.sideStartEl');if(!el)return;var ta=document.getElementById('timedTA');if(ta){ta.value+=(ta.value&&!ta.value.endsWith('\n')?'\n':'')+el.textContent+' ';ta.focus();updateWC('timedWC','timedTA');}});
+}
+
+function setupSideRef(){
+  document.getElementById('sideRefTxt').innerHTML="D'habitude, le lundi et le mardi, je prends le bus pour aller à l'université parce que c'est moins cher que le taxi. Le bus est parfois bondé le matin, mais c'est pratique. Le mercredi, je vais à vélo au marché parce que c'est gratuit et bon pour la santé. Le week-end, je rentre chez moi à pied parce que c'est gratuit et il n'y a pas de trafic. Je préfère le vélo à la voiture parce que c'est plus écologique.";
+}
+
+// ─── CHECK ───
+function checkGD(){
+  var anss=['à','en','en','à','en','en'];var ok=0;
+  anss.forEach(function(a,i){var inp=document.getElementById('gd'+i);if(!inp)return;var v=inp.value.trim().toLowerCase();var good=v===a;inp.classList.toggle('ok',good);inp.classList.toggle('bad',!good);if(good)ok++;});
+  var fb=document.getElementById('gdFb');fb.style.display='block';
+  var pct=Math.round(ok/anss.length*100);
+  fb.style.cssText=pct>=83?'background:var(--gnb);color:var(--gn2)':'background:var(--rdb);color:var(--rd)';
+  fb.innerHTML=ok+'/6 correct. Answers: <em>à, en, en, à, en, en</em> — Rule: en = engine | à = personal power';
+  if(pct>=83){playChime();confetti();}
+}
+function resetGD(){GRAM_DRILL.forEach(function(d,i){var inp=document.getElementById('gd'+i);if(inp){inp.value='';inp.className='flInp';}});document.getElementById('gdFb').style.display='none';}
+
+// ─── COMPLETE ───
+function completeLesson(){
+  var tot=FINAL_QS.filter(function(q,i){return quizDone[i]===q.ans;}).length;
+  var qs=Math.round(tot/FINAL_QS.length*100);
+  document.getElementById('quizScN').textContent=tot+'/'+FINAL_QS.length;
+  document.getElementById('quizScLbl').textContent=qs>=90?'Excellent!':qs>=70?'Tres bien!':'Keep going!';
+  document.getElementById('quizSc').classList.add('show');
+  var fw=(document.getElementById('timedTA').value||'').split(/\s+/).filter(function(w){return w.length>0;}).length;
+  document.getElementById('stWords').textContent=fw;document.getElementById('stQuiz').textContent=qs+'%';
+  document.getElementById('certItems').innerHTML=CAN_DO.map(function(item){return '<div class="certItem"><span style="font-size:1rem;flex-shrink:0;margin-top:1px">✅</span><span>'+item+'</span></div>';}).join('');
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('show');});
+  document.getElementById('compSc').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(function(){playFanfare();confetti();setTimeout(confetti,800);setTimeout(confetti,1600);},300);
+  showCoach('Jour 16 complete! Vous savez vous deplacer en francais. Bravo!',12000);
+  saveAT(fw,qs);
+}
+
+async function saveAT(wc,qs){
+  var now=new Date().toISOString();
+  try{await postAT(AT_L,{studentName:sN,studentEmail:sE,lessonNumber:16,lessonTopic:'Les Transports - En vs A - Comparatifs - Vlogs - Matching Game',submissionText:(document.getElementById('timedTA').value||'').substring(0,600),wordsWritten:wc,writingScore:qs,vocabularyScore:qs,grammarScore:qs,submittedAt:now});await postAT(AT_S,{studentName:sN,studentEmail:sE,speechTranscript:'Jour16: '+spkN+' speaking sessions',wordsSpoken:spkN*7,uniqueVocabularyCount:spkN*5,grammarComplexityLevel:'A1',grammarAccuracyScore:qs,fluencyRating:Math.min(10,spkN),confidenceRating:Math.min(10,spkN+2),submittedAt:now});await postAT(AT_R,{studentName:sN,studentEmail:sE,whatFeltHardToday:(document.getElementById('r1')&&document.getElementById('r1').value)||'—',biggestWin:'Quiz:'+qs+'% Total correct:'+totalCorrect,whatSurprisedYouToday:(document.getElementById('r2')&&document.getElementById('r2').value)||'—',motivationLevel:mE==='🔥'?10:mE==='😄'?8:mE==='🙂'?6:mE==='😐'?4:3,submittedAt:now});showToast('Progress saved!');document.getElementById('saveCon').style.display='block';}catch(e){localStorage.setItem('ffl_d16_'+sE,JSON.stringify({sN:sN,sE:sE,qs:qs}));}
+}
+async function postAT(t,f){var r=await fetch('https://api.airtable.com/v0/'+AT_BASE+'/'+encodeURIComponent(t),{method:'POST',headers:{'Authorization':'Bearer '+AT_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({fields:f})});if(!r.ok)throw new Error();return r.json();}
+
+// ─── UI UTILS ───
+function showCoach(msg,dur){document.getElementById('cbTxt').textContent=msg;document.getElementById('cb').classList.add('show');if(cTmr)clearTimeout(cTmr);if(dur>0)cTmr=setTimeout(function(){document.getElementById('cb').classList.remove('show');},dur);}
+function toggleCoach(){var msgs=["'En bus' or 'à vélo'? Engine = en. Personal power = à. Taxi = en taxi. Feet = à pied!","Hover any blue underlined word in the vlog stories to see the English meaning — try it now!","Frequency words go AFTER the verb: Je prends toujours le bus — never Je toujours prends!","'Bondé' = crowded. You hear this at rush hour: Le bus est très bondé ce matin!","The matching game includes words from Days 10-15 — spaced repetition in action!","Comparison: plus rapide QUE — the QUE is always there. Never drop it!","'Les transports en commun' = public transport. This phrase appears in TEF writing tasks!","'D'habitude' (usually) is stronger than 'souvent' (often). Both go AFTER the verb!"];document.getElementById('cb').classList.contains('show')?document.getElementById('cb').classList.remove('show'):showCoach(msgs[Math.floor(Math.random()*msgs.length)],8000);}
+function showStreakToast(msg){var el=document.getElementById('streakToast');el.textContent=msg;el.style.display='block';setTimeout(function(){el.style.display='none';},2500);}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},4000);}
+function confetti(){var box=document.getElementById('cfB');box.style.display='block';box.innerHTML='';['#2347A0','#C49000','#1A7A44','#8B2020','#0E1828'].forEach(function(col){for(var i=0;i<8;i++){var cf=document.createElement('div');cf.className='cf';cf.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*12+'%;background:'+col+';animation-delay:'+Math.random()*.8+'s;animation-duration:'+(1.5+Math.random())+'s';box.appendChild(cf);}});setTimeout(function(){box.style.display='none';box.innerHTML='';},2800);}
+function openDict(){document.getElementById('dictP').classList.add('open');setTimeout(function(){document.getElementById('dpW').focus();},280);}
+function closeDict(){document.getElementById('dictP').classList.remove('open');}
+function dpLookup(){var w=document.getElementById('dpW').value.trim();if(!w)return;var enc=encodeURIComponent(w);document.getElementById('dpLks').innerHTML='<div class="dpLk" data-url="https://context.reverso.net/translation/french-english/'+enc+'">🔍 Reverso</div><div class="dpLk" data-url="https://www.wordreference.com/fren/'+enc+'">📖 WordRef</div><div class="dpLk" data-url="https://fr.wiktionary.org/wiki/'+enc+'">📚 Wiktionnaire</div>';spk(w,null);}
+
+// ─── SETUP ───
+function setupAllEvents(){
+  document.getElementById('mSRow').addEventListener('click',function(ev){var b=ev.target.closest('.moodBtn');if(b)selMood(b,false);});
+  document.getElementById('mERow').addEventListener('click',function(ev){var b=ev.target.closest('.moodBtn');if(b)selMood(b,true);});
+  document.getElementById('wStartBtn').addEventListener('click',startLesson);
+  document.getElementById('coachAv').addEventListener('click',toggleCoach);
+  document.getElementById('dictFab').addEventListener('click',openDict);
+  document.getElementById('dpX').addEventListener('click',closeDict);
+  document.getElementById('dpGo').addEventListener('click',dpLookup);
+  document.getElementById('dpW').addEventListener('keydown',function(e){if(e.key==='Enter')dpLookup();});
+  document.getElementById('dpLks').addEventListener('click',function(ev){var el=ev.target.closest('.dpLk');if(el)window.open(el.dataset.url,'dict','width=960,height=640,scrollbars=yes');});
+  document.getElementById('dotsW').addEventListener('click',function(ev){var el=ev.target.closest('.dot');if(el){var n=parseInt(el.id.replace('dot',''));if(n)goSec(n);}});
+  document.getElementById('musicBtn').addEventListener('click',function(){if(musicPlaying){stopCafe();this.classList.remove('on');}else{startCafe();this.classList.add('on');}});
+  [['s1Next',2],['s2Prev',1],['s2Next',3],['s3Prev',2],['s3Next',4],['s4Prev',3],['s4Next',5],['s5Prev',4],['s5Next',6],['s6Prev',5],['s6Next',7],['s7Prev',6]].forEach(function(p){var el=document.getElementById(p[0]);if(el)el.addEventListener('click',function(){goSec(p[1]);});});
+  document.getElementById('hearAllBtn').addEventListener('click',function(){spk(TRANS_SPK.join('. '),this);});
+  document.getElementById('hearAdjBtn').addEventListener('click',function(){spk(ADJ_SPK.join('. '),this);});
+  document.getElementById('startMatchBtn').addEventListener('click',startMatchGame);
+  document.getElementById('resetMatchBtn').addEventListener('click',resetMatch);
+  document.getElementById('checkGDBtn').addEventListener('click',checkGD);
+  document.getElementById('resetGDBtn').addEventListener('click',resetGD);
+  document.getElementById('startTimedBtn').addEventListener('click',startTimedChallenge);
+  document.getElementById('timedTA').addEventListener('input',function(){updateWC('timedWC','timedTA');});
+  document.getElementById('checkTimedBtn').addEventListener('click',checkTimed);
+  document.getElementById('timedSttBtn').addEventListener('click',function(){startSTT('timedTA','timedSttLive',this);});
+  document.getElementById('timedPbBtn').addEventListener('click',function(){pBlob('timedPbBtn');});
+  document.getElementById('checkSQBtn').addEventListener('click',function(){
+    var anss=[1,2,2,1,2,2];var tot=Object.keys(sqDone).filter(function(i){return sqDone[i]===anss[i];}).length;
+    document.getElementById('sqScoreN').textContent=tot+'/6';document.getElementById('sqScore').classList.add('show');
+    if(tot>=5){playSectionDing();confetti();}
+  });
+  document.getElementById('resetSQBtn').addEventListener('click',function(){sqDone={};renderSignQuiz();document.getElementById('sqScore').classList.remove('show');});
+  document.getElementById('completeBtn').addEventListener('click',completeLesson);
+}
+
+function startLesson(){
+  var n=document.getElementById('wName').value.trim();var e=document.getElementById('wEmail').value.trim();
+  var ok=true;
+  if(!n){document.getElementById('wName').classList.add('werr');document.getElementById('wNE').style.display='block';ok=false;}else{document.getElementById('wName').classList.remove('werr');document.getElementById('wNE').style.display='none';}
+  if(!e||!e.includes('@')){document.getElementById('wEmail').classList.add('werr');document.getElementById('wEE').style.display='block';ok=false;}else{document.getElementById('wEmail').classList.remove('werr');document.getElementById('wEE').style.display='none';}
+  if(!ok)return;
+  sN=n;sE=e;
+  document.getElementById('wModal').style.display='none';
+  document.getElementById('dictFab').style.display='flex';
+  try{buildUI();}catch(err){console.warn('BuildUI:',err);}
+  // Auto-play music after 10 seconds
+  setTimeout(function(){
+    if(!musicPlaying){startCafe();document.getElementById('musicBtn').classList.add('on');showCoach('Background music started. Press the music button to turn it off.',4000);}
+  },10000);
+  showCoach('Bienvenue '+sN.split(' ')[0]+'! Jour 16 — how do you get around in French? Let us learn!',8000);
+}
+
+function buildUI(){
+  buildDots();buildPS();
+  renderTransCards();renderAdjCards();renderFreqCards();
+  renderMatchGame();
+  renderGramDrill();renderDialogues();
+  renderVlogPersons();renderVlogStories();
+  setupSideRef();renderStarters();buildAB('acBarTimed','timedTA');
+  renderSignCards();renderSignQuiz();
+  renderFinalQuiz();renderRefl();
+  updProg();
+}
+document.addEventListener('DOMContentLoaded',function(){setupAllEvents();});
+</script></body></html>
